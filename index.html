@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#050816">
+<title>Cosmion · A Viagem Diária</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050816;
+    --panel: rgba(9, 18, 38, .78);
+    --panel-edge: rgba(95, 212, 255, .22);
+    --cyan: #5fd4ff;
+    --pink: #ff5c8a;
+    --gold: #ffcf4d;
+    --violet: #c77dff;
+    --text: #e3ecff;
+    --dim: #7d8db0;
+    --pixel: 'Silkscreen', 'Courier New', monospace;
+    --mono: 'VT323', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+  body { font-family: var(--mono); font-size: 20px; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+
+  #space { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .scanlines {
+    position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+  }
+  .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
+
+  #app { position: fixed; inset: 0; margin: 0 auto; max-width: 520px; height: 100dvh; z-index: 2; }
+  .screen { position: absolute; inset: 0; display: none; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ---------- shared bits ---------- */
+  .panel {
+    background: var(--panel);
+    clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+    box-shadow: inset 0 0 0 2px var(--panel-edge);
+  }
+  .label { font-family: var(--pixel); font-size: 10px; letter-spacing: .32em; color: var(--dim); }
+  .big-btn {
+    font-family: var(--pixel); font-size: 18px; letter-spacing: .3em;
+    padding: 18px 30px 18px 36px; background: #0a1730; color: var(--text);
+    border: 3px solid var(--cyan);
+    box-shadow: 0 0 0 3px #0a1730, 0 0 0 5px rgba(95,212,255,.35), 0 0 22px rgba(95,212,255,.35);
+    transition: transform .08s, box-shadow .2s;
+  }
+  .big-btn:hover { box-shadow: 0 0 0 3px #0a1730, 0 0 0 5px rgba(95,212,255,.6), 0 0 30px rgba(95,212,255,.6); }
+  .big-btn:active { transform: translateY(2px); }
+  .big-btn.alt { border-color: var(--pink); box-shadow: 0 0 0 3px #0a1730, 0 0 0 5px rgba(255,92,138,.35), 0 0 22px rgba(255,92,138,.35); }
+  .icon-btn {
+    width: 44px; height: 38px; display: grid; place-items: center;
+    background: var(--panel); box-shadow: inset 0 0 0 2px var(--panel-edge); color: var(--cyan);
+  }
+  .icon-btn svg { width: 22px; height: 22px; shape-rendering: crispEdges; }
+  canvas.sprite { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+  .logo {
+    font-family: var(--pixel); font-weight: 700; font-size: 54px; letter-spacing: .06em; line-height: 1;
+    color: #f2f7ff;
+    text-shadow: -3px 0 rgba(255,92,138,.85), 3px 0 rgba(95,212,255,.85), 0 0 24px rgba(95,212,255,.45);
+    animation: glitch 4s infinite steps(1);
+  }
+  @keyframes glitch {
+    0%, 92%, 100% { transform: none; }
+    93% { transform: translate(-2px, 1px) skewX(-6deg); }
+    95% { transform: translate(3px, -1px); }
+    97% { transform: translate(-1px, 0) skewX(4deg); }
+  }
+
+  /* ---------- intro ---------- */
+  #screen-intro { align-items: center; justify-content: center; text-align: center; padding: 24px 20px 120px; gap: 18px; }
+  .tag { font-family: var(--pixel); letter-spacing: .55em; font-size: 13px; color: var(--cyan); margin-top: -4px; }
+  .sub { color: var(--dim); font-size: 20px; letter-spacing: .08em; max-width: 340px; }
+  .legend { list-style: none; width: 100%; max-width: 360px; padding: 10px 14px; display: grid; gap: 4px; }
+  .legend li { display: grid; grid-template-columns: 40px 1fr auto auto; align-items: center; gap: 10px; text-align: left; font-size: 19px; }
+  .legend canvas { width: 36px; height: 36px; }
+  .legend .nm { font-family: var(--pixel); font-size: 11px; letter-spacing: .14em; }
+  .legend .al { color: var(--dim); }
+  .legend .pt { min-width: 64px; text-align: right; }
+  .meta { font-family: var(--pixel); font-size: 10px; letter-spacing: .3em; color: var(--dim); }
+
+  /* ---------- game ---------- */
+  #screen-game { padding-top: env(safe-area-inset-top); }
+  .hud { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 8px; padding: 12px 12px 0; position: relative; z-index: 3; }
+  .hud .panel { padding: 8px 12px 6px; min-width: 0; }
+  .hud .panel.right { text-align: right; }
+  .hud b { display: block; font-family: var(--mono); font-weight: 400; font-size: 34px; line-height: 1; margin-top: 4px; color: var(--cyan); text-shadow: 0 0 10px rgba(95,212,255,.5); white-space: nowrap; }
+  .hud .right b { color: var(--pink); text-shadow: 0 0 10px rgba(255,92,138,.5); }
+  .progress { text-align: center; padding-top: 6px; }
+  #pips { display: flex; gap: 4px; justify-content: center; padding: 4px; background: rgba(0,0,0,.35); box-shadow: inset 0 0 0 2px rgba(255,255,255,.05); }
+  #pips i { width: 16px; height: 16px; background: #0d1a33; box-shadow: inset 0 0 0 2px #1e2f52; }
+  #pips i.cur { background: var(--pink); box-shadow: inset 0 0 0 2px #ffffff55, 0 0 8px var(--pink); animation: blink 1s infinite steps(2); }
+  @keyframes blink { 50% { opacity: .45; } }
+  .progress .label { display: block; margin-top: 8px; }
+
+  .toolbar { display: flex; justify-content: space-between; padding: 8px 12px 0; position: relative; z-index: 3; padding-right: 76px; }
+  #zone { font-family: var(--pixel); font-size: 9px; letter-spacing: .3em; color: var(--dim); align-self: center; text-align: center; flex: 1; }
+
+  #ruler { position: absolute; right: 0; top: 0; height: 100%; width: 100px; z-index: 2; pointer-events: none; }
+
+  .stage { flex: 1; position: relative; min-height: 0; overflow: hidden; z-index: 2; }
+  #ship { position: absolute; left: 9%; top: 18%; width: 52px; height: 104px; animation: bob 3s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(255,92,138,.45)); }
+  @keyframes bob { 50% { transform: translateY(-8px); } }
+  .center {
+    position: absolute; inset: 0; padding: 0 70px 0 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px;
+  }
+  .center.warp-out { animation: warpOut .55s ease-in forwards; }
+  .center.warp-in { animation: warpIn .6s cubic-bezier(.2,.8,.2,1); }
+  @keyframes warpOut { to { transform: translateY(-80px) scale(.55); opacity: 0; filter: blur(6px); } }
+  @keyframes warpIn { from { transform: translateY(90px) scale(1.25); opacity: 0; filter: blur(6px); } }
+
+  .prompt-label { font-family: var(--pixel); font-size: 11px; letter-spacing: .4em; color: var(--pink); }
+  #prompt-text { font-family: var(--mono); font-weight: 400; font-size: 42px; line-height: 1.05; letter-spacing: .02em; text-shadow: 0 0 16px rgba(95,212,255,.35); max-width: 380px; }
+  .hint { color: var(--dim); font-size: 19px; letter-spacing: .12em; }
+
+  #result-icon { width: 104px; height: 104px; }
+  #result-tier { font-family: var(--pixel); font-weight: 400; font-size: 28px; letter-spacing: .1em; line-height: 1.1; }
+  #result-answer { font-size: 30px; letter-spacing: .08em; }
+  #result-pts { font-size: 28px; letter-spacing: .08em; }
+  #result-pts b { font-weight: 400; }
+  #result-flavor { font-size: 19px; color: #aab8d6; letter-spacing: .16em; }
+  .pop { animation: pop .5s cubic-bezier(.2,1.6,.4,1); }
+  @keyframes pop { from { transform: scale(.2) rotate(-12deg); opacity: 0; } }
+  .rise > * { animation: rise .45s both; }
+  .rise > *:nth-child(2) { animation-delay: .08s; } .rise > *:nth-child(3) { animation-delay: .16s; }
+  .rise > *:nth-child(4) { animation-delay: .24s; } .rise > *:nth-child(5) { animation-delay: .32s; }
+  @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
+
+  .controls { padding: 18px 14px calc(16px + env(safe-area-inset-bottom)); position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center;
+    background: linear-gradient(to bottom, transparent, rgba(4,8,20,.85) 40%); }
+  #answer-form { width: 100%; max-width: 440px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .timer { display: flex; align-items: center; gap: 10px; }
+  .timer .track { flex: 1; height: 10px; background: #0d1a33; box-shadow: inset 0 0 0 2px #1e2f52; padding: 2px; }
+  #timer-bar { height: 100%; width: 100%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); transition: width .1s linear; }
+  #timer-num { font-size: 26px; min-width: 34px; text-align: right; color: var(--cyan); }
+  .timer.low #timer-bar { background: var(--pink); box-shadow: 0 0 8px var(--pink); }
+  .timer.low #timer-num { color: var(--pink); animation: blink .5s infinite steps(2); }
+  .input-row { display: flex; gap: 8px; }
+  #answer {
+    flex: 1; min-width: 0; font-family: var(--mono); font-size: 28px; letter-spacing: .06em;
+    color: var(--text); background: rgba(5,12,28,.85); border: 2px solid #1e3a66; padding: 10px 14px; outline: none;
+    caret-color: var(--pink);
+  }
+  #answer:focus { border-color: var(--cyan); box-shadow: 0 0 14px rgba(95,212,255,.3); }
+  #answer::placeholder { color: #43557a; }
+  #answer-form .big-btn { font-size: 13px; padding: 0 16px 0 20px; letter-spacing: .22em; }
+  .shake { animation: shake .3s; }
+  @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  #btn-next { margin: 6px 0 4px; }
+
+  #warp-flash { position: fixed; inset: 0; z-index: 40; pointer-events: none; opacity: 0; transition: opacity .25s;
+    background: radial-gradient(ellipse at center, #ffffff 0%, #bff3ff 30%, rgba(95,212,255,.4) 60%, transparent 85%); }
+  #warp-flash.on { opacity: 1; transition: opacity .12s; }
+  #warp-text { position: fixed; left: 0; right: 0; top: 46%; text-align: center; z-index: 41; pointer-events: none;
+    font-family: var(--pixel); font-size: 14px; letter-spacing: .6em; color: var(--cyan); text-shadow: 0 0 12px var(--cyan); opacity: 0; }
+  #warp-text.on { opacity: 1; animation: blink .25s infinite steps(2); }
+
+  /* ---------- end ---------- */
+  #screen-end > * { flex-shrink: 0; }
+  #screen-end { overflow-y: auto; overflow-x: hidden; padding: 18px 16px calc(28px + env(safe-area-inset-bottom)); }
+  .end-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .end-head .logo { font-size: 30px; }
+  #end-title { font-family: var(--pixel); font-size: 10px; letter-spacing: .3em; color: var(--dim); text-align: right; }
+  .end-score { display: flex; align-items: baseline; gap: 12px; margin: 22px 0 4px; flex-wrap: wrap; }
+  #end-score { font-family: var(--pixel); font-weight: 700; font-size: 84px; line-height: .9; color: #f2f7ff; text-shadow: -3px 0 rgba(255,92,138,.7), 3px 0 rgba(95,212,255,.7); }
+  .end-score .unit { font-family: var(--pixel); font-size: 14px; letter-spacing: .3em; color: var(--dim); }
+  #end-dist { font-size: 28px; color: var(--cyan); margin-left: auto; }
+  #gauss { width: 100%; height: auto; display: block; margin-top: 8px; }
+  .pct { font-family: var(--pixel); font-size: 12px; letter-spacing: .24em; color: var(--cyan); margin: 10px 0 26px; line-height: 1.7; }
+  .pct b { color: var(--pink); font-weight: 400; }
+  .log-head { font-family: var(--pixel); font-size: 12px; letter-spacing: .3em; color: var(--text); display: flex; gap: 14px; align-items: baseline; border-bottom: 2px dashed #1e2f52; padding-bottom: 8px; }
+  .log-head span { font-size: 9px; color: var(--dim); }
+  .log { position: relative; height: 250px; margin-top: 6px; }
+  .plot { position: absolute; top: 10px; bottom: 26px; left: 50px; right: 10px; }
+  .lane { position: absolute; left: -50px; right: -10px; border-top: 1px dashed rgba(125,141,176,.22); }
+  .lane span { position: absolute; left: 0; top: -9px; font-size: 15px; color: var(--dim); background: var(--bg); padding-right: 4px; }
+  .lane.ground { border-top: 2px solid rgba(95,212,255,.35); }
+  .stem { position: absolute; bottom: 0; width: 2px; transform: translateX(-1px); opacity: .7; animation: grow .6s both; transform-origin: bottom; }
+  @keyframes grow { from { transform: translateX(-1px) scaleY(0); } }
+  .log img { position: absolute; width: 36px; height: 36px; transform: translate(-50%, 50%); image-rendering: pixelated; animation: fadeIn .4s both; }
+  @keyframes fadeIn { from { opacity: 0; } }
+  .colnum { position: absolute; bottom: -24px; transform: translateX(-50%); color: var(--dim); font-size: 17px; }
+  .answers { list-style: none; margin: 22px 0; display: grid; gap: 8px; }
+  .answers li { display: grid; grid-template-columns: 30px 1fr; gap: 8px; padding: 10px 12px; }
+  .answers .n { font-family: var(--pixel); font-size: 10px; color: var(--dim); padding-top: 4px; }
+  .answers .q { color: var(--dim); font-size: 17px; }
+  .answers .a { font-size: 22px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .answers .a b { font-family: var(--pixel); font-weight: 400; font-size: 10px; letter-spacing: .14em; align-self: center; }
+  .end-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; padding: 8px 0 12px; }
+  .end-actions .big-btn { font-size: 13px; padding: 16px 18px 16px 22px; }
+  .stats { text-align: center; font-family: var(--pixel); font-size: 9px; letter-spacing: .3em; color: var(--dim); margin-top: 10px; }
+
+  #toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px); z-index: 60; opacity: 0; transition: .25s;
+    font-family: var(--pixel); font-size: 11px; letter-spacing: .3em; padding: 12px 18px; background: #0a1730; border: 2px solid var(--cyan); }
+  #toast.on { opacity: 1; transform: translateX(-50%); }
+
+  /* ---------- modal ---------- */
+  .modal { position: fixed; inset: 0; z-index: 70; background: rgba(2,4,12,.82); display: grid; place-items: center; padding: 16px; }
+  .modal .panel { max-width: 420px; width: 100%; padding: 22px 20px; max-height: 90dvh; overflow-y: auto; }
+  .modal h3 { font-family: var(--pixel); font-weight: 400; font-size: 16px; letter-spacing: .3em; color: var(--cyan); margin-bottom: 12px; }
+  .modal p { color: #b7c4e0; margin-bottom: 10px; line-height: 1.15; }
+  .modal .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .modal .big-btn { font-size: 12px; padding: 12px 16px 12px 20px; }
+
+  @media (max-height: 640px) {
+    #prompt-text { font-size: 34px; }
+    #result-icon { width: 80px; height: 80px; }
+    #result-tier { font-size: 26px; }
+    #ship { width: 40px; height: 80px; }
+    .center { gap: 8px; }
+  }
+  @media (max-width: 360px) {
+    .hud b { font-size: 26px; }
+    #pips i { width: 12px; height: 12px; }
+    .logo { font-size: 42px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo, #ship, #pips i.cur { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<div id="app">
+  <!-- ================= INTRO ================= -->
+  <section id="screen-intro" class="screen active">
+    <div class="logo">COSMION</div>
+    <div class="tag">A VIAGEM DIÁRIA</div>
+    <p class="sub">7 transmissões · 20 segundos cada · respostas mais raras vão mais longe</p>
+    <ul class="legend panel" id="legend"></ul>
+    <button id="btn-start" class="big-btn">DECOLAR ▲</button>
+    <div class="meta" id="intro-meta"></div>
+  </section>
+
+  <!-- ================= GAME ================= -->
+  <section id="screen-game" class="screen">
+    <canvas id="ruler"></canvas>
+    <header class="hud">
+      <div class="panel"><span class="label">DISTÂNCIA</span><b id="hud-dist">0 AL</b></div>
+      <div class="progress"><div id="pips"></div><span class="label" id="hud-prompt">PROMPT 1 DE 7</span></div>
+      <div class="panel right"><span class="label">SCORE</span><b id="hud-score">0</b></div>
+    </header>
+    <div class="toolbar">
+      <button class="icon-btn" id="btn-menu" aria-label="Menu">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="2"/><rect x="2" y="7" width="12" height="2"/><rect x="2" y="11" width="12" height="2"/></svg>
+      </button>
+      <div id="zone"></div>
+      <button class="icon-btn" id="btn-sound" aria-label="Som">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="6" width="3" height="4"/><rect x="4" y="5" width="2" height="6"/><rect x="6" y="3" width="2" height="10"/><g id="snd-on"><rect x="10" y="6" width="1" height="4"/><rect x="12" y="4" width="1" height="8"/></g><g id="snd-off" style="display:none"><rect x="10" y="5" width="1" height="1"/><rect x="11" y="6" width="1" height="1"/><rect x="12" y="7" width="2" height="2"/><rect x="14" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/></g></svg>
+      </button>
+    </div>
+
+    <main class="stage">
+      <canvas id="ship" class="sprite" width="13" height="26"></canvas>
+      <div class="center" id="center">
+        <div id="prompt-view" class="rise">
+          <div class="prompt-label" id="prompt-label">TRANSMISSÃO 01</div>
+          <h2 id="prompt-text"></h2>
+          <p class="hint">Válida — mas o mais rara possível.</p>
+        </div>
+        <div id="result-view" class="rise" hidden>
+          <canvas id="result-icon" class="sprite pop" width="24" height="24"></canvas>
+          <h2 id="result-tier"></h2>
+          <p id="result-answer"></p>
+          <p id="result-pts"></p>
+          <p id="result-flavor"></p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="controls">
+      <form id="answer-form" autocomplete="off">
+        <div class="timer" id="timer"><div class="track"><div id="timer-bar"></div></div><span id="timer-num">20</span></div>
+        <div class="input-row">
+          <input id="answer" type="text" maxlength="40" placeholder="sua resposta..." autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="go">
+          <button type="submit" class="big-btn">VIAJAR ▲</button>
+        </div>
+      </form>
+      <button id="btn-next" class="big-btn" hidden>PRÓXIMO SALTO ▲</button>
+    </footer>
+  </section>
+
+  <!-- ================= END ================= -->
+  <section id="screen-end" class="screen">
+    <div class="end-head"><span class="logo">COSMION</span><span id="end-title"></span></div>
+    <div class="end-score"><span id="end-score">0</span><span class="unit">PTS</span><span id="end-dist"></span></div>
+    <svg id="gauss" viewBox="0 0 340 130"></svg>
+    <div id="end-pct" class="pct"></div>
+    <div class="log-head">DIÁRIO DE BORDO <span>MAIS LONGE = MAIS RARO</span></div>
+    <div class="log"><div class="plot" id="plot"></div></div>
+    <ol id="answers" class="answers"></ol>
+    <div class="end-actions">
+      <button id="btn-share" class="big-btn alt">COMPARTILHAR</button>
+      <button id="btn-again" class="big-btn">NOVA VIAGEM ▲</button>
+    </div>
+    <div class="stats" id="end-stats"></div>
+  </section>
+</div>
+
+<div id="warp-flash"></div>
+<div id="warp-text">SALTO HIPERESPACIAL</div>
+<div id="toast"></div>
+
+<div class="modal" id="menu" hidden>
+  <div class="panel">
+    <h3>COMO JOGAR</h3>
+    <p>Você parte da órbita da Terra. A cada transmissão, responda algo <b>válido</b> — mas o <b>mais raro possível</b>.</p>
+    <p>Respostas óbvias viram poeira estelar. Respostas que quase ninguém dá abrem um buraco negro e te arremessam milhares de anos-luz adiante.</p>
+    <p>Resposta inválida ou tempo esgotado: <span style="color:var(--pink)">SEM SINAL</span> — 0 AL, 0 PTS.</p>
+    <ul class="legend" id="legend-modal"></ul>
+    <div class="row">
+      <button class="big-btn" id="btn-resume">CONTINUAR</button>
+      <button class="big-btn alt" id="btn-quit">ABORTAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =====================================================================
+   COSMION — trivia de raridade espacial
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('pt-BR');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ROUND_SIZE = 7;
+const TIME_LIMIT = 20;               // segundos por transmissão
+const LAUNCH_DAY = new Date(2026, 0, 1);
+
+/* ---------------- Níveis de raridade ---------------- */
+const TIERS = {
+  comum:    { name: 'POEIRA ESTELAR', dist: 10,  pts: 10,  color: '#a9bcd0', emoji: '☄️',
+              flavor: ['A resposta que todo mundo dá.', 'Rota mais movimentada da galáxia.', 'Até a sonda do vizinho pensou nisso.'] },
+  incomum:  { name: 'ASTEROIDE',      dist: 100, pts: 30,  color: '#5fd4ff', emoji: '🪐',
+              flavor: ['Sólido — fora da rota comum.', 'Poucos exploradores passaram por aqui.', 'Órbita respeitável.'] },
+  raro:     { name: 'SUPERNOVA',      dist: 300, pts: 60,  color: '#ffcf4d', emoji: '🌟',
+              flavor: ['Genuinamente incomum. Que brilho!', 'Uma explosão de originalidade.', 'Os radares mal te alcançam.'] },
+  lendario: { name: 'BURACO NEGRO',   dist: 600, pts: 100, color: '#c77dff', emoji: '🕳️',
+              flavor: ['Nem a luz escapa dessa resposta.', 'Quase ninguém chegou tão longe.', 'Você dobrou o espaço-tempo.'] },
+  vazio:    { name: 'SEM SINAL',      dist: 0,   pts: 0,   color: '#ff5c7a', emoji: '⬛',
+              flavor: ['Resposta fora do mapa estelar.'] },
+};
+const TIER_ORDER = ['comum', 'incomum', 'raro', 'lendario'];
+
+/* ---------------- Banco de respostas ----------------
+   Cada nível: lista separada por vírgula; sinônimos separados por "|".
+   A comparação ignora acentos, maiúsculas, artigos e pequenos erros de digitação. */
+const QUESTIONS = [
+  { q: 'Cite um país da Europa',
+    strip: ['republica da', 'republica de', 'republica', 'reino da', 'reino de', 'reino do', 'principado de', 'grao ducado de', 'cidade do', 'estado da'],
+    tiers: {
+      comum: 'França, Portugal, Espanha, Itália, Alemanha, Inglaterra|Reino Unido|Grã-Bretanha',
+      incomum: 'Holanda|Países Baixos, Bélgica, Suíça, Grécia, Irlanda, Suécia, Noruega, Polônia|Polónia, Rússia, Áustria, Dinamarca, Ucrânia, Finlândia, Escócia',
+      raro: 'Hungria, República Tcheca|Tchéquia|Chéquia, Romênia|Roménia, Bulgária, Croácia, Sérvia, Eslováquia, Eslovênia|Eslovénia, Islândia, Estônia|Estónia, Letônia|Letónia, Lituânia, Bielorrússia|Belarus, Albânia, Luxemburgo, Malta, Moldávia|Moldova, País de Gales|Gales, Turquia, Irlanda do Norte',
+      lendario: 'Andorra, Liechtenstein, San Marino, Mônaco|Monaco, Vaticano|Santa Sé, Macedônia do Norte|Macedônia, Montenegro, Bósnia|Bósnia e Herzegovina, Kosovo, Chipre, Geórgia, Armênia, Azerbaijão, Cazaquistão',
+    } },
+  { q: 'Cite um elemento químico',
+    strip: ['elemento', 'o elemento'],
+    tiers: {
+      comum: 'Oxigênio, Hidrogênio, Carbono, Ferro, Ouro, Nitrogênio|Azoto, Sódio',
+      incomum: 'Hélio, Prata, Cobre, Cálcio, Cloro, Potássio, Alumínio, Zinco, Mercúrio, Chumbo, Urânio, Enxofre, Fósforo, Magnésio, Neônio|Neon|Néon, Platina, Silício, Lítio',
+      raro: 'Titânio, Níquel, Iodo, Flúor, Argônio|Árgon, Cobalto, Estanho, Cromo, Manganês, Plutônio, Rádio, Tungstênio|Volfrâmio, Boro, Berílio, Bromo, Césio, Criptônio|Kriptônio, Xenônio, Radônio, Arsênio, Bário, Estrôncio, Selênio, Nióbio',
+      lendario: 'Oganessônio, Tecnécio, Promécio, Háfnio, Rutênio, Ródio, Ósmio, Irídio, Gadolínio, Ítrio, Escândio, Lantânio, Cério, Neodímio, Európio, Disprósio, Telúrio, Tálio, Polônio, Astato, Frâncio, Actínio, Protactínio, Netúnio, Amerício, Cúrio, Berquélio, Califórnio, Einstênio, Férmio, Mendelévio, Nobélio, Laurêncio, Rutherfórdio, Dúbnio, Seabórgio, Bóhrio, Hássio, Meitnério, Darmstádtio, Roentgênio, Copernício, Nihônio, Fleróvio, Moscóvio, Livermório, Tenesso, Germânio, Gálio, Índio, Vanádio, Zircônio, Molibdênio, Paládio, Cádmio, Antimônio, Bismuto, Rubídio, Samário, Térbio, Hólmio, Érbio, Túlio, Itérbio, Lutécio, Tântalo, Rênio, Tório, Praseodímio',
+    } },
+  { q: 'Cite um planeta ou planeta-anão do Sistema Solar',
+    strip: ['planeta anao', 'planeta'],
+    tiers: {
+      comum: 'Terra, Marte, Júpiter, Saturno',
+      incomum: 'Vênus, Mercúrio, Netuno, Urano',
+      raro: 'Plutão, Ceres',
+      lendario: 'Éris, Haumea, Makemake, Sedna, Gonggong, Quaoar, Orcus, Salácia',
+    } },
+  { q: 'Cite uma constelação',
+    strip: ['constelacao de', 'constelacao do', 'constelacao da', 'constelacao'],
+    tiers: {
+      comum: 'Órion|Orion, Cruzeiro do Sul|Cruzeiro, Ursa Maior, Escorpião',
+      incomum: 'Ursa Menor, Cassiopeia, Leão, Touro, Gêmeos, Sagitário, Áries|Carneiro, Peixes, Aquário, Câncer|Caranguejo, Virgem, Libra|Balança, Capricórnio',
+      raro: 'Andrômeda, Pégaso, Cisne, Lira, Águia, Centauro, Perseu, Dragão|Draco, Hércules, Cão Maior, Cão Menor, Ofiúco|Serpentário, Boieiro, Cefeu, Cocheiro|Auriga, Serpente, Três Marias',
+      lendario: 'Camaleão, Tucano, Fênix, Grou, Pavão, Mosca, Compasso, Microscópio, Telescópio, Buril, Relógio, Retículo, Mesa, Oitante, Pintor, Popa, Quilha, Vela, Bússola, Máquina Pneumática, Escultor, Forno, Lince, Raposa, Sextante, Taça, Corvo, Hidra, Hidra Macho, Lebre, Pomba, Unicórnio, Lagarto, Flecha, Golfinho, Cavalo Menor, Triângulo, Triângulo Austral, Altar, Coroa Boreal, Coroa Austral, Lobo, Índio, Peixe Voador, Ave do Paraíso, Dourado, Erídano, Baleia, Girafa, Cabeleira de Berenice, Cães de Caça, Esquadro, Peixe Austral',
+    } },
+  { q: 'Cite um instrumento musical',
+    strip: ['instrumento'],
+    tiers: {
+      comum: 'Violão, Piano, Guitarra, Bateria, Flauta, Violino',
+      incomum: 'Saxofone|Sax, Trompete, Baixo, Cavaquinho, Pandeiro, Teclado, Harpa, Sanfona|Acordeão|Gaita-ponto, Violoncelo|Cello, Clarinete, Ukulele, Gaita, Triângulo, Tambor, Órgão, Flauta Doce',
+      raro: 'Berimbau, Viola Caipira|Viola, Oboé, Fagote, Trombone, Tuba, Xilofone, Cuíca, Banjo, Bandolim, Contrabaixo, Tímpano, Gaita de Foles, Agogô, Surdo, Tamborim, Ocarina, Marimba, Castanholas, Alaúde, Cajón, Zabumba, Trompa, Harmônica, Atabaque, Chocalho, Reco-reco, Bongô',
+      lendario: 'Theremin|Teremim, Didgeridoo, Sitar, Cítara, Kalimba, Alfaia, Rabeca, Hang|Handpan, Koto, Shamisen, Erhu, Balalaica, Bouzouki, Cravo, Corne Inglês, Flautim, Glockenspiel, Celesta, Vibrafone, Tabla, Darbuka, Bombardino, Sousafone, Steelpan, Mbira, Saltério, Harmônio, Serrote, Kora, Shakuhachi, Gamelão, Ondas Martenot, Hurdy-gurdy|Sanfona de Roda, Pífano, Ganzá, Caxixi',
+    } },
+  { q: 'Cite uma fruta',
+    strip: ['fruta'],
+    tiers: {
+      comum: 'Banana, Maçã, Laranja, Morango, Uva, Manga, Abacaxi, Melancia',
+      incomum: 'Pera, Mamão, Kiwi, Limão, Abacate, Melão, Goiaba, Maracujá, Pêssego, Coco, Cereja, Caju, Acerola, Tangerina|Mexerica|Bergamota|Mimosa',
+      raro: 'Jabuticaba, Pitanga, Caqui, Figo, Ameixa, Carambola, Pitaya|Pitaia, Framboesa, Mirtilo|Blueberry, Amora, Romã, Lichia, Graviola, Açaí, Cupuaçu, Jaca, Seriguela|Siriguela, Umbu, Tamarindo, Nectarina, Damasco, Fruta-do-conde|Pinha|Ata, Lima, Cacau',
+      lendario: 'Rambutã|Rambutan, Durian, Mangostão, Cambuci, Bacuri, Buriti, Pequi, Jenipapo, Sapoti, Cajá, Uvaia, Grumixama, Araçá, Cabeludinha, Feijoa, Physalis, Pitomba, Mangaba, Murici, Jatobá, Bacaba, Tucumã, Camu-camu, Araticum, Marolo, Ingá, Longan, Kumquat, Groselha, Cagaita, Biribá, Puçá, Abiu, Cambucá, Taperebá, Mangustão, Fruta-pão',
+    } },
+  { q: 'Cite um animal marinho',
+    strip: ['animal'],
+    tiers: {
+      comum: 'Tubarão, Baleia, Golfinho, Peixe, Polvo',
+      incomum: 'Tartaruga|Tartaruga Marinha, Água-viva, Estrela-do-mar, Caranguejo, Lula, Foca, Camarão, Cavalo-marinho, Orca, Raia, Lagosta, Pinguim',
+      raro: 'Morsa, Leão-marinho, Ouriço-do-mar, Moreia, Peixe-palhaço, Peixe-espada, Atum, Sardinha, Krill, Coral, Mexilhão, Ostra, Lontra-marinha, Arraia-jamanta|Manta, Narval, Beluga, Peixe-boi, Baiacu, Siri, Tubarão-baleia, Cachalote, Marlim, Barracuda, Garoupa, Polvo-de-anéis-azuis',
+      lendario: 'Dugongo, Lula-gigante|Lula-colossal, Tamboril|Peixe-pescador|Peixe-lanterna, Náutilo, Pepino-do-mar, Dragão-marinho, Isópode, Caravela-portuguesa, Salpa, Anêmona, Esponja, Quimera, Celacanto, Peixe-lua|Mola mola, Tubarão-duende, Tubarão-cobra, Lírio-do-mar, Nudibrânquio|Lesma-do-mar, Copépode, Peixe-bolha, Vampyroteuthis|Lula-vampiro, Lagosta-boxeadora|Tamarutaca, Caranguejo-aranha-japonês, Dumbo|Polvo-dumbo, Siba, Tunicado, Pólipo',
+    } },
+  { q: 'Cite uma marca de carro',
+    strip: ['carro', 'marca'],
+    tiers: {
+      comum: 'Fiat, Volkswagen|VW, Chevrolet, Ford, Toyota, Honda',
+      incomum: 'Hyundai, Renault, Nissan, Jeep, BMW, Mercedes|Mercedes-Benz, Audi, Peugeot, Citroën, Kia, Mitsubishi, Ferrari, Porsche, Tesla, BYD',
+      raro: 'Lamborghini, Volvo, Subaru, Mazda, Land Rover, Jaguar, Suzuki, Chery|Caoa Chery, Dodge, RAM, Mini, Lexus, Maserati, Bugatti, McLaren, Rolls-Royce, Bentley, Troller, Gurgel',
+      lendario: 'Koenigsegg, Pagani, Lada, Dacia, Skoda, SEAT, Alfa Romeo, Lancia, Saab, Tata, Mahindra, Aston Martin, Lotus, Rimac, GMC, Cadillac, Lincoln, Buick, Chrysler, Pontiac, Smart, Opel, Daihatsu, Isuzu, Polestar, Lucid, Rivian, GWM|Great Wall, JAC, Lifan, DKW, Puma, Simca, Willys, Studebaker, Plymouth, Hummer, Infiniti, Acura, Genesis, Cupra, DS, Abarth, Spyker, Morgan, Noble, Zenvo, Hennessey, Saleen, De Tomaso, Delorean, Trabant, Vemag, Miura, Lobini, Agrale',
+    } },
+  { q: 'Cite uma capital de estado brasileiro',
+    strip: ['cidade de', 'capital'],
+    tiers: {
+      comum: 'São Paulo|SP, Rio de Janeiro|Rio, Belo Horizonte|BH, Salvador, Brasília',
+      incomum: 'Recife, Fortaleza, Porto Alegre, Curitiba, Manaus, Belém, Florianópolis|Floripa, Goiânia',
+      raro: 'Natal, João Pessoa, Maceió, Aracaju, São Luís, Teresina, Vitória, Cuiabá, Campo Grande',
+      lendario: 'Palmas, Boa Vista, Macapá, Porto Velho, Rio Branco',
+    } },
+  { q: 'Cite uma missão, nave ou telescópio espacial',
+    strip: ['missao', 'sonda', 'nave', 'telescopio espacial', 'telescopio', 'foguete', 'rover', 'estacao espacial', 'estacao'],
+    tiers: {
+      comum: 'Apollo 11|Apollo|Apolo|Apolo 11, Sputnik|Sputnik 1',
+      incomum: 'Voyager|Voyager 1|Voyager 2, Hubble, ISS|Estação Espacial Internacional|EEI, Challenger, Columbia, Artemis|Artemis 1|Artemis 2, Ônibus Espacial|Space Shuttle, Apollo 13, Saturn V|Saturno V',
+      raro: 'Gemini, Mercury, Vostok|Vostok 1, Soyuz, Curiosity, Perseverance, James Webb|JWST|Webb, Cassini|Cassini-Huygens, New Horizons, Pioneer|Pioneer 10|Pioneer 11, Spirit, Opportunity, Skylab, Mir, Falcon 9|Falcon, Starship, Dragon|Crew Dragon, Discovery, Endeavour, Atlantis, Enterprise',
+      lendario: 'Rosetta, Philae, Juno, Galileo, Kepler, TESS, Chandra, Spitzer, Viking, Mariner, Magellan, Messenger, Dawn, OSIRIS-REx, Hayabusa|Hayabusa2, Chang\'e, Tianwen, Shenzhou, Tiangong, Chandrayaan, Mangalyaan, Ingenuity, Parker|Parker Solar Probe, Gaia, Planck, Luna 2|Luna, Venera, Vega, Giotto, Ulysses, InSight, Phoenix, Deep Impact, Stardust, Huygens, Lunokhod, Buran, Sojourner, Pathfinder|Mars Pathfinder, Salyut, Europa Clipper, Lucy, DART, Psyche, SOHO, Akatsuki, BepiColombo, JUICE, Kepler, Herschel, Arecibo, Vanguard, Explorer 1, Zhurong, Yutu, Odysseus, Beresheet, SCD-1, Amazonia-1',
+    } },
+  { q: 'Cite um idioma',
+    strip: ['lingua', 'idioma'],
+    tiers: {
+      comum: 'Inglês, Espanhol, Português, Francês',
+      incomum: 'Alemão, Italiano, Japonês, Chinês|Mandarim, Russo, Árabe, Coreano',
+      raro: 'Hindi, Grego, Hebraico, Latim, Holandês|Neerlandês, Turco, Sueco, Polonês, Tupi, Guarani, Esperanto, Libras, Catalão, Norueguês, Dinamarquês, Finlandês, Ucraniano, Persa|Farsi, Bengali, Suaíli|Swahili, Tailandês, Vietnamita, Indonésio, Romeno, Húngaro, Tcheco, Cantonês',
+      lendario: 'Basco|Euskera, Galês, Gaélico|Irlandês, Islandês, Quéchua, Aimará, Náuatle|Nahuatl, Klingon, Élfico|Quenya|Sindarin, Zulu, Xhosa, Iorubá|Yoruba, Amárico, Tâmil, Urdu, Punjabi, Mongol, Tibetano, Sânscrito, Aramaico, Maori, Havaiano, Estoniano, Letão, Lituano, Maltês, Georgiano, Armênio, Cazaque, Uzbeque, Tagalo, Malaio, Khmer, Birmanês, Laosiano, Nheengatu, Yanomami, Kaingang, Ladino, Iídiche, Occitano, Bretão, Corso, Sardo, Frísio, Romanche, Crioulo Haitiano, Tok Pisin, Galego, Dothraki, Alto Valiriano, Na\'vi',
+    } },
+];
+
+/* ---------------- Julgamento das respostas ---------------- */
+function norm(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+const ARTICLES = /^(o|a|os|as|um|uma|el|la|the|de|do|da)\s+/;
+
+for (const q of QUESTIONS) {
+  q.index = [];
+  q.stripN = (q.strip || []).map(norm);
+  for (const tier of TIER_ORDER) {
+    for (const entry of q.tiers[tier].split(',')) {
+      for (const alias of entry.split('|')) {
+        const n = norm(alias);
+        if (n && !q.index.some(e => e.n === n)) q.index.push({ n, tier });
+      }
+    }
+  }
+}
+
+function variants(input, q) {
+  const out = new Set();
+  const add = v => { v = v.trim(); if (v) out.add(v); };
+  const base = norm(input);
+  add(base); add(base.replace(ARTICLES, ''));
+  for (const p of q.stripN) {
+    for (const v of [...out]) if (v.startsWith(p + ' ')) add(v.slice(p.length + 1).replace(ARTICLES, ''));
+  }
+  for (const v of [...out]) if (v.length > 4 && v.endsWith('s')) add(v.slice(0, -1));   // plural simples
+  return [...out];
+}
+
+function lev(a, b) {
+  const m = a.length, n = b.length;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+
+function judge(input, q) {
+  const vs = variants(input, q);
+  for (const v of vs) { const hit = q.index.find(e => e.n === v); if (hit) return hit.tier; }
+  let best = null, bd = Infinity;
+  for (const v of vs) {
+    if (v.length < 5) continue;                      // palavras curtas: só correspondência exata
+    const tol = v.length >= 9 ? 2 : 1;
+    for (const e of q.index) {
+      if (Math.abs(e.n.length - v.length) > tol) continue;
+      const d = lev(v, e.n);
+      if (d <= tol && d < bd) { bd = d; best = e; }
+    }
+  }
+  return best ? best.tier : 'vazio';
+}
+
+/* ---------------- Aleatoriedade com semente (viagem diária) ---------------- */
+function mulberry32(a) {
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function pickQuestions(seed) {
+  const rnd = mulberry32(seed);
+  const pool = QUESTIONS.slice();
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  return pool.slice(0, ROUND_SIZE);
+}
+function voyageNumber() {
+  const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.max(1, Math.round((today - LAUNCH_DAY) / 86400000) + 1);
+}
+
+/* ---------------- Persistência (opcional) ---------------- */
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('cosmion-stats')) || {}; } catch (e) { return {}; } },
+  set(v) { try { localStorage.setItem('cosmion-stats', JSON.stringify(v)); } catch (e) {} },
+};
+
+/* =====================================================================
+   PIXEL SPRITES (desenhados proceduralmente em 24x24)
+   ===================================================================== */
+const P = (ctx, x, y, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, 1, 1); };
+function hash3(x, y, z) {
+  let h = Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(z, 2246822519) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+}
+
+const SPRITES = {
+  // Poeira estelar: meteoro com rastro
+  comum(ctx, t) {
+    ctx.clearRect(0, 0, 24, 24);
+    const len = 10 + (Math.sin(t * 14) > 0 ? 1 : 0);
+    for (let i = 0; i < len; i++) {
+      if (i > 7 && i % 2) continue;
+      const x = 12 - i, y = 12 - i;
+      const c = i < 3 ? '#fff1c9' : i < 6 ? '#ffb36b' : '#ff6b3d';
+      P(ctx, x, y, c);
+      if (i < 7) { P(ctx, x + 1, y, c); P(ctx, x, y + 1, c); }
+      if (i < 3) { P(ctx, x - 1, y + 1, c); P(ctx, x + 1, y - 1, c); }
+    }
+    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+      const dx = x - 15.5, dy = y - 15.5;
+      if (Math.hypot(dx, dy) >= 5.3) continue;
+      const l = dx + dy;
+      let c = l < -3 ? '#d8cbbb' : l > 3 ? '#5e5048' : '#9a8778';
+      if ((x === 14 && y === 16) || (x === 17 && y === 13) || (x === 18 && y === 17) || (x === 15 && y === 18)) c = '#4a3f39';
+      P(ctx, x, y, c);
+    }
+  },
+  // Asteroide/Lua: planeta gasoso com anel
+  incomum(ctx, t) {
+    ctx.clearRect(0, 0, 24, 24);
+    const cx = 11.5, cy = 11.5, r = 6.8;
+    const bands = ['#d9f7ff', '#8fe3ff', '#5fc8f0', '#3a9bd6', '#8fe3ff', '#2b77b8', '#5fc8f0', '#d9f7ff'];
+    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+      const dx = x - cx, dy = y - cy;
+      const tilt = dy + dx * 0.32;
+      const v = (dx * dx) / 121 + (tilt * tilt) / 9.5;
+      const onRing = v > 0.6 && v < 1;
+      const inP = Math.hypot(dx, dy) < r;
+      if (onRing && (!inP || tilt > 0)) { P(ctx, x, y, v > 0.82 ? '#7fb8d9' : '#e6f7ff'); continue; }
+      if (!inP) continue;
+      let b = Math.floor((dy + r + Math.sin(dx * 0.7 + t * 2.2) * 0.7) / 1.9);
+      b = Math.max(0, Math.min(bands.length - 1, b));
+      let c = bands[b];
+      if (dx + dy * 0.4 > 3.6) c = '#1d5a92';
+      if (dx + dy < -6.2) c = '#ffffff';
+      P(ctx, x, y, c);
+    }
+  },
+  // Supernova: estrela brilhante pulsante
+  raro(ctx, t) {
+    ctx.clearRect(0, 0, 24, 24);
+    const L = 9 + Math.round(Math.sin(t * 5) * 1.6);
+    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+      const dx = x - 11.5, dy = y - 11.5, ax = Math.abs(dx), ay = Math.abs(dy), d = Math.hypot(dx, dy);
+      let c = null;
+      if (d < 2) c = '#ffffff';
+      else if (d < 3.2) c = '#fff6c2';
+      else if (d < 4.4) c = '#ffd54f';
+      else if ((ax < 1 && ay < L + 1) || (ay < 1 && ax < L + 1)) c = d < 6 ? '#fff6c2' : d < 8.5 ? '#ffd54f' : '#ff9d3d';
+      else if (Math.abs(ax - ay) < 0.9 && d < L * 0.62) c = d < 5.6 ? '#ffd54f' : '#ff9d3d';
+      else if (d < 6.2 && (x + y) % 2 === 0) c = '#ff7a3d';
+      if (c) P(ctx, x, y, c);
+    }
+  },
+  // Buraco negro: espiral de acreção
+  lendario(ctx, t) {
+    ctx.clearRect(0, 0, 24, 24);
+    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+      const dx = x - 11.5, dy = y - 11.5, r = Math.hypot(dx, dy), th = Math.atan2(dy, dx);
+      if (r < 2.9) { P(ctx, x, y, '#000000'); continue; }
+      if (r < 4.1) { P(ctx, x, y, r < 3.5 ? '#fff0d6' : '#ffb3ec'); continue; }
+      if (r > 11.8) continue;
+      const a = Math.sin(2 * th + r * 0.72 - t * 3);
+      if (a > 0.42) P(ctx, x, y, r < 6.5 ? '#ff9df0' : r < 9 ? '#c77dff' : '#7b4fd6');
+      else if (a > 0 && (x + y) % 2 === 0) P(ctx, x, y, '#4b2a8a');
+    }
+  },
+  // Sem sinal: estática
+  vazio(ctx, t) {
+    ctx.clearRect(0, 0, 24, 24);
+    const f = Math.floor(t * 12);
+    const greys = ['#1b2236', '#3a4560', '#6b7896', '#b9c3da'];
+    for (let y = 6; y < 20; y++) for (let x = 3; x < 21; x++) {
+      const edge = y === 6 || y === 19 || x === 3 || x === 20;
+      P(ctx, x, y, edge ? '#56607a' : greys[Math.floor(hash3(x, y, f) * 4)]);
+    }
+    for (let i = 0; i < 4; i++) { P(ctx, 8 + i, 2 + i, '#56607a'); P(ctx, 15 - i, 2 + i, '#56607a'); }
+    for (let i = 0; i < 10; i++) { P(ctx, 7 + i, 8 + i * 1.0 | 0, '#ff5c7a'); P(ctx, 8 + i, 8 + i * 1.0 | 0, '#ff5c7a'); }
+  },
+};
+
+const ROCKET = [
+  '......W......',
+  '.....WWW.....',
+  '.....WWS.....',
+  '....WWWWS....',
+  '....WCCCS....',
+  '....CBLBC....',
+  '....CBBBC....',
+  '....WCCCS....',
+  '....WWWWS....',
+  '....WRRRS....',
+  '....WWWWS....',
+  '...RWWWWSR...',
+  '..RRWWWWSRR..',
+  '.RRRWWWWSRRR.',
+  '.RR.GGGGG.RR.',
+  '.R...GGG...R.',
+];
+const ROCKET_PAL = { W: '#eaf2ff', S: '#9fb2d4', C: '#5fd4ff', B: '#0e3550', L: '#bff3ff', R: '#ff5c8a', G: '#55607a' };
+function drawRocket(ctx, t, power) {
+  ctx.clearRect(0, 0, 13, 26);
+  ROCKET.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== '.') P(ctx, x, y, ROCKET_PAL[ch]); }));
+  const len = 3 + power * 7 + (hash3(Math.floor(t * 20), 1, 7) * 2 | 0);
+  for (let i = 0; i < len; i++) {
+    const k = i / len;
+    const c = k < .25 ? '#ffffff' : k < .5 ? '#ffe27a' : k < .8 ? '#ff9d3d' : '#ff5c5c';
+    if (i < len * 0.55) { P(ctx, 5, 16 + i, c); P(ctx, 7, 16 + i, c); }
+    P(ctx, 6, 16 + i, c);
+  }
+}
+
+const spriteCache = {};
+function spriteURL(kind) {
+  if (!spriteCache[kind]) {
+    const c = document.createElement('canvas'); c.width = c.height = 24;
+    SPRITES[kind](c.getContext('2d'), 0.3); spriteCache[kind] = c.toDataURL();
+  }
+  return spriteCache[kind];
+}
+
+const animated = [];   // canvases que se redesenham ~10 fps
+function animSprite(canvas, kind) {
+  const o = { canvas, ctx: canvas.getContext('2d'), kind };
+  animated.push(o); SPRITES[kind](o.ctx, 0); return o;
+}
+
+/* =====================================================================
+   ÁUDIO (sintetizado, opcional)
+   ===================================================================== */
+let AC = null, muted = false;
+function audio() {
+  if (muted) return null;
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(freq, dur = .12, type = 'square', vol = .04, delay = 0) {
+  const a = audio(); if (!a) return;
+  const o = a.createOscillator(), g = a.createGain(), t0 = a.currentTime + delay;
+  o.type = type; o.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0 + dur + .02);
+}
+const SFX = {
+  tick() { tone(1250, .04, 'square', .025); },
+  submit() { tone(660, .06); tone(990, .06, 'square', .03, .05); },
+  tier(k) {
+    const seq = { vazio: [196, 147], comum: [440, 523], incomum: [440, 554, 659], raro: [523, 659, 784, 1047], lendario: [392, 523, 659, 784, 1047, 1319] }[k];
+    seq.forEach((f, i) => tone(f, .14, k === 'vazio' ? 'sawtooth' : 'square', .04, i * .075));
+  },
+  warp() {
+    const a = audio(); if (!a) return;
+    const len = 1.1, buf = a.createBuffer(1, a.sampleRate * len, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(), t0 = a.currentTime;
+    src.buffer = buf; f.type = 'bandpass'; f.Q.value = 3;
+    f.frequency.setValueAtTime(180, t0); f.frequency.exponentialRampToValueAtTime(4200, t0 + .85);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(.22, t0 + .7); g.gain.exponentialRampToValueAtTime(.0001, t0 + len);
+    src.connect(f).connect(g).connect(a.destination); src.start(t0);
+  },
+};
+
+/* =====================================================================
+   CENÁRIO: céu estrelado, nebulosas, Terra, objetos à deriva, régua
+   ===================================================================== */
+const space = $('#space'), sctx = space.getContext('2d');
+const rulerC = $('#ruler'), rctx = rulerC.getContext('2d');
+const shipCtx = $('#ship').getContext('2d');
+let W = 0, H = 0, DPR = 1, stars = [], drifts = [];
+let warp = 0, warpTarget = 0, displayDist = 0;
+
+const ZONES = [
+  { d: 0,    name: 'ÓRBITA TERRESTRE',     top: '#0a1a3a', bot: '#17396a', neb: '#2f7fd6' },
+  { d: 300,  name: 'SISTEMA SOLAR',        top: '#06122a', bot: '#0d2b48', neb: '#1fa3a8' },
+  { d: 1000, name: 'BRAÇO DE ÓRION',       top: '#0a0822', bot: '#25144a', neb: '#7b4fd6' },
+  { d: 2000, name: 'NÚCLEO GALÁCTICO',     top: '#10061c', bot: '#3a0f3c', neb: '#d64fa8' },
+  { d: 3000, name: 'VAZIO INTERGALÁCTICO', top: '#030308', bot: '#160612', neb: '#8a1f3c' },
+];
+const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, k) => { const A = hex2rgb(a), B = hex2rgb(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join(''); };
+function zoneAt(d) {
+  let i = 0; while (i < ZONES.length - 1 && d >= ZONES[i + 1].d) i++;
+  const z = ZONES[i], n = ZONES[i + 1];
+  const k = n ? Math.min(1, Math.max(0, (d - z.d) / (n.d - z.d) - .6) / .4) : 0;  // mistura nos últimos 40%
+  return { name: z.name, top: n ? mix(z.top, n.top, k) : z.top, bot: n ? mix(z.bot, n.bot, k) : z.bot, neb: n ? mix(z.neb, n.neb, k) : z.neb };
+}
+
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = window.innerWidth; H = window.innerHeight;
+  space.width = W * DPR; space.height = H * DPR;
+  sctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const count = Math.round(Math.min(260, W * H / 3200));
+  stars = Array.from({ length: count }, () => ({ x: Math.random() * W, y: Math.random() * H, z: .15 + Math.random() * .85, tw: Math.random() * 6.28 }));
+}
+window.addEventListener('resize', resize);
+
+/* --- Terra em pixel art, girando --- */
+const earthC = document.createElement('canvas'); earthC.width = earthC.height = 72;
+const ectx = earthC.getContext('2d'); const eimg = ectx.createImageData(72, 72);
+function vnoise(x, y) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+  const s = v => v * v * (3 - 2 * v), u = s(xf), v = s(yf);
+  const a = hash3(xi, yi, 3), b = hash3(xi + 1, yi, 3), c = hash3(xi, yi + 1, 3), d = hash3(xi + 1, yi + 1, 3);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+const fbm = (x, y) => vnoise(x, y) * .6 + vnoise(x * 2.1, y * 2.1) * .28 + vnoise(x * 4.3, y * 4.3) * .12;
+function renderEarth(rot) {
+  const d = eimg.data, R = 33, c = 35.5;
+  for (let y = 0; y < 72; y++) for (let x = 0; x < 72; x++) {
+    const i = (y * 72 + x) * 4, dx = (x - c) / R, dy = (y - c) / R, rr = dx * dx + dy * dy;
+    if (rr > 1) {
+      const dd = Math.sqrt(rr);
+      if (dd < 1.07) { d[i] = 127; d[i + 1] = 216; d[i + 2] = 255; d[i + 3] = Math.round(200 * (1.07 - dd) / .07); }
+      else d[i + 3] = 0;
+      continue;
+    }
+    const nz = Math.sqrt(1 - rr), lon = Math.atan2(dx, nz) + rot, lat = Math.asin(dy);
+    const nx = Math.cos(lon) * 1.7 + 4, ny = Math.sin(lon) * 1.7 + lat * 2.4;
+    const h = fbm(nx + 8, ny + 8), cl = fbm(nx * 1.4 + 40 + rot * .4, ny * 1.8 + 3);
+    let col;
+    if (Math.abs(lat) > 1.18) col = [232, 244, 255];
+    else if (h > .56) col = h > .66 ? [214, 196, 128] : h > .6 ? [46, 138, 71] : [63, 174, 90];
+    else col = h > .5 ? [42, 139, 214] : [24, 92, 170];
+    if (cl > .63) col = [240, 248, 255];
+    const light = Math.max(.25, Math.min(1.1, .55 - dx * .45 - dy * .35 + nz * .45));
+    const q = v => Math.min(255, Math.round(v * light / 16) * 16);     // posterização = pixel art
+    d[i] = q(col[0]); d[i + 1] = q(col[1]); d[i + 2] = q(col[2]); d[i + 3] = 255;
+  }
+  ectx.putImageData(eimg, 0, 0);
+}
+
+function spawnDrift(kind) {
+  const c = document.createElement('canvas'); c.width = c.height = 24;
+  const size = Math.min(W, 520) * (.28 + Math.random() * .12);
+  const left = Math.random() < .5;
+  drifts.push({ kind, c, ctx: c.getContext('2d'), size, x: left ? W * .05 + Math.random() * W * .15 : W * .65 + Math.random() * W * .2, y: -size, z: .5 });
+}
+
+function drawRuler() {
+  const w = rulerC.clientWidth, h = rulerC.clientHeight;
+  if (!w || !h) return;
+  if (rulerC.width !== Math.round(w * DPR) || rulerC.height !== Math.round(h * DPR)) {
+    rulerC.width = Math.round(w * DPR); rulerC.height = Math.round(h * DPR);
+  }
+  const c = rctx; c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, w, h);
+  const youY = Math.round(h * .5), scale = 1.15, lineX = w - 8;
+  c.fillStyle = 'rgba(125,141,176,.55)'; c.fillRect(lineX, 0, 2, h);
+  c.font = '16px VT323, monospace'; c.textAlign = 'right'; c.textBaseline = 'middle';
+  const dMin = displayDist - (h - youY) / scale, dMax = displayDist + youY / scale;
+  for (let d = Math.ceil(dMin / 10) * 10; d <= dMax; d += 10) {
+    if (d < 0) continue;
+    const y = Math.round(youY - (d - displayDist) * scale);
+    const big = d % 50 === 0;
+    c.fillStyle = big ? 'rgba(170,186,220,.8)' : 'rgba(125,141,176,.5)';
+    c.fillRect(lineX - (big ? 12 : 6), y, big ? 12 : 6, 2);
+    if (d % 100 === 0 && Math.abs(y - youY) > 12) { c.fillStyle = 'rgba(170,186,220,.75)'; c.fillText(d === 0 ? 'TERRA' : fmt(d) + ' AL', lineX - 16, y); }
+  }
+  // marcador VOCÊ
+  c.fillStyle = '#ff5c8a';
+  c.fillRect(lineX - 34, youY - 1, 30, 2);
+  c.beginPath(); c.moveTo(lineX + 2, youY - 7); c.lineTo(lineX - 8, youY); c.lineTo(lineX + 2, youY + 7); c.fill();
+  c.font = '15px Silkscreen, monospace'; c.fillText('VOCÊ', lineX - 38, youY + 1);
+}
+
+let last = performance.now(), animClock = 0, earthClock = 0, earthRot = 0, lastHudDist = -1;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; const t = now / 1000;
+  warp += (warpTarget - warp) * Math.min(1, dt * (warpTarget > warp ? 3.2 : 5));
+  const gap = S.dist - displayDist;
+  displayDist += gap * Math.min(1, dt * 2.2);
+  if (Math.abs(gap) < .5) displayDist = S.dist;
+  const thrust = Math.min(1, Math.abs(gap) / 250);
+
+  const z = zoneAt(displayDist);
+  const g = sctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, z.top); g.addColorStop(1, z.bot);
+  sctx.fillStyle = g; sctx.fillRect(0, 0, W, H);
+
+  // nebulosas
+  const nebs = [[.2, .25, .55], [.85, .6, .7], [.4, .95, .5]];
+  sctx.globalCompositeOperation = 'lighter';
+  nebs.forEach(([fx, fy, fr], i) => {
+    const span = H * 1.8, y = ((fy * H + displayDist * (.35 + i * .1) + t * 4) % span) - H * .4;
+    const r = Math.max(W, H) * fr * .6;
+    const ng = sctx.createRadialGradient(fx * W, y, 0, fx * W, y, r);
+    ng.addColorStop(0, z.neb + '33'); ng.addColorStop(1, 'transparent');
+    sctx.fillStyle = ng; sctx.fillRect(0, 0, W, H);
+  });
+  sctx.globalCompositeOperation = 'source-over';
+
+  // Terra
+  const eSize = Math.min(W * 1.5, 900), eY = H * .74 + displayDist * 3.2;
+  if (eY < H + 10) {
+    earthClock += dt;
+    if (earthClock > .09) { earthClock = 0; earthRot += .012; renderEarth(earthRot); }
+    sctx.imageSmoothingEnabled = false;
+    sctx.drawImage(earthC, W / 2 - eSize / 2, eY, eSize, eSize);
+  }
+
+  // estrelas (rolam para baixo = nave subindo)
+  const speed = 14 + thrust * 260 + warp * 2600;
+  for (const s of stars) {
+    s.y += speed * s.z * dt;
+    if (s.y > H + 40) { s.y = -Math.random() * 40; s.x = Math.random() * W; }
+    const len = speed * s.z * .035;
+    const a = Math.min(1, .35 + s.z * .65) * (len < 3 ? .65 + .35 * Math.sin(t * 3 + s.tw) : 1);
+    sctx.fillStyle = warp > .3 && s.z > .6 ? `rgba(191,243,255,${a})` : `rgba(230,238,255,${a})`;
+    const sz = s.z > .75 ? 2 : 1;
+    sctx.fillRect(Math.round(s.x), Math.round(s.y - len), sz, Math.max(sz, Math.round(len)));
+  }
+
+  // objetos celestes à deriva
+  sctx.imageSmoothingEnabled = false;
+  drifts = drifts.filter(d => d.y < H + d.size);
+  for (const d of drifts) {
+    d.y += (24 + thrust * 160 + warp * 1800) * d.z * dt;
+    SPRITES[d.kind](d.ctx, t);
+    sctx.globalAlpha = .55; sctx.drawImage(d.c, d.x, d.y, d.size, d.size); sctx.globalAlpha = 1;
+  }
+
+  // sprites animados (≈10 fps)
+  animClock += dt;
+  if (animClock > .1) {
+    animClock = 0;
+    for (let i = animated.length - 1; i >= 0; i--) {
+      const o = animated[i];
+      if (!o.canvas.isConnected) { animated.splice(i, 1); continue; }
+      SPRITES[o.kind](o.ctx, t);
+    }
+  }
+
+  if (S.screen === 'game') {
+    drawRocket(shipCtx, t, Math.max(thrust, warp));
+    drawRuler();
+    const hd = Math.round(displayDist);
+    if (hd !== lastHudDist) {
+      lastHudDist = hd; $('#hud-dist').textContent = fmt(hd) + ' AL';
+      $('#zone').textContent = '◆ ' + z.name;
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* =====================================================================
+   ESTADO E FLUXO DO JOGO
+   ===================================================================== */
+const S = {
+  screen: 'intro', phase: 'intro', questions: [], i: 0, results: [], score: 0, dist: 0,
+  daily: true, voyage: voyageNumber(), timerStart: 0, timerId: null, jumpId: 0, lastSec: 0, pausedAt: 0, revealAt: 0,
+};
+const input = $('#answer'), center = $('#center');
+const resultIcon = animSprite($('#result-icon'), 'comum');
+
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+  S.screen = name;
+}
+
+function buildLegend(el) {
+  el.innerHTML = '';
+  for (const k of [...TIER_ORDER, 'vazio']) {
+    const T = TIERS[k], li = document.createElement('li');
+    const cv = document.createElement('canvas'); cv.width = cv.height = 24; cv.className = 'sprite';
+    li.appendChild(cv);
+    li.insertAdjacentHTML('beforeend', `<span class="nm" style="color:${T.color}">${T.name}</span><span class="al">+${fmt(T.dist)} AL</span><span class="pt">+${T.pts} PTS</span>`);
+    el.appendChild(li); animSprite(cv, k);
+  }
+}
+
+function introMeta() {
+  const st = store.get();
+  $('#intro-meta').textContent = `VIAGEM #${S.voyage}` + (st.best ? ` · RECORDE ${st.best} PTS` : '');
+}
+
+function newVoyage(daily) {
+  S.daily = daily;
+  const seed = daily ? S.voyage * 7919 : (Math.random() * 1e9) | 0;
+  S.questions = pickQuestions(seed);
+  S.i = 0; S.results = []; S.score = 0; S.dist = 0; displayDist = 0; drifts = [];
+  $('#hud-score').textContent = '0';
+  const pips = $('#pips'); pips.innerHTML = '';
+  for (let i = 0; i < ROUND_SIZE; i++) pips.appendChild(document.createElement('i'));
+  lastHudDist = -1;
+  switchScreen('game');
+  hyperjump(showPrompt, 'IGNIÇÃO');
+}
+
+function updatePips() {
+  [...$('#pips').children].forEach((p, i) => {
+    const r = S.results[i];
+    p.className = i === S.i && S.phase === 'prompt' ? 'cur' : '';
+    p.style.background = r ? TIERS[r.tier].color : '';
+    p.style.boxShadow = r ? `inset 0 0 0 2px rgba(255,255,255,.3), 0 0 6px ${TIERS[r.tier].color}` : '';
+  });
+}
+
+function showPrompt() {
+  const q = S.questions[S.i];
+  S.phase = 'prompt';
+  $('#prompt-view').hidden = false; $('#result-view').hidden = true;
+  $('#answer-form').hidden = false; $('#btn-next').hidden = true;
+  $('#prompt-label').textContent = `TRANSMISSÃO ${String(S.i + 1).padStart(2, '0')}`;
+  $('#prompt-text').textContent = q.q;
+  $('#hud-prompt').textContent = `PROMPT ${S.i + 1} DE ${ROUND_SIZE}`;
+  input.value = '';
+  restartAnim($('#prompt-view'), 'rise');
+  updatePips();
+  startTimer();
+  setTimeout(() => { if (S.phase === 'prompt') input.focus({ preventScroll: true }); }, 60);
+}
+
+function restartAnim(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+
+/* --- cronômetro --- */
+function startTimer() {
+  S.timerStart = performance.now(); S.lastSec = TIME_LIMIT;
+  clearInterval(S.timerId); S.timerId = setInterval(tickTimer, 100); tickTimer();
+}
+function stopTimer() { clearInterval(S.timerId); S.timerId = null; }
+function tickTimer() {
+  if (S.pausedAt) return;
+  const left = Math.max(0, TIME_LIMIT - (performance.now() - S.timerStart) / 1000);
+  const sec = Math.ceil(left);
+  $('#timer-bar').style.width = (left / TIME_LIMIT * 100) + '%';
+  $('#timer-num').textContent = sec;
+  $('#timer').classList.toggle('low', left <= 5);
+  if (sec !== S.lastSec) { S.lastSec = sec; if (sec <= 5 && sec > 0) SFX.tick(); }
+  if (left <= 0) { stopTimer(); submit(true); }
+}
+
+/* --- resposta --- */
+function submit(timeout) {
+  if (S.phase !== 'prompt') return;
+  const raw = input.value.trim().replace(/\s+/g, ' ');
+  if (!raw && !timeout) { restartAnim($('#answer-form'), 'shake'); input.focus(); return; }
+  stopTimer(); S.phase = 'reveal'; S.revealAt = performance.now();
+  input.blur(); SFX.submit();
+
+  const q = S.questions[S.i];
+  const tier = raw ? judge(raw, q) : 'vazio';
+  const T = TIERS[tier];
+  S.results.push({ q: q.q, answer: raw, tier });
+  S.score += T.pts; S.dist += T.dist;
+
+  // HUD
+  countUp($('#hud-score'), S.score - T.pts, S.score, 700);
+  updatePips();
+
+  // cartão de resultado
+  $('#prompt-view').hidden = true; $('#result-view').hidden = false;
+  resultIcon.kind = tier; SPRITES[tier](resultIcon.ctx, 0);
+  restartAnim(resultIcon.canvas, 'pop'); restartAnim($('#result-view'), 'rise');
+  const tierEl = $('#result-tier');
+  tierEl.textContent = T.name; tierEl.style.color = T.color; tierEl.style.textShadow = `0 0 14px ${T.color}99`;
+  $('#result-answer').textContent = raw ? `“${raw.charAt(0).toUpperCase() + raw.slice(1)}”` : '“...”';
+  $('#result-pts').innerHTML = `<b style="color:${T.color}">+${T.pts} PTS</b> · <span style="white-space:nowrap">avança ${fmt(T.dist)} AL</span>`;
+  $('#result-flavor').textContent = !raw ? 'Tempo esgotado. Nenhum sinal enviado.' : T.flavor[Math.floor(Math.random() * T.flavor.length)];
+  setTimeout(() => SFX.tier(tier), 120);
+  if (tier !== 'vazio') spawnDrift(tier);
+
+  const lastQ = S.i === ROUND_SIZE - 1;
+  $('#answer-form').hidden = true;
+  const nb = $('#btn-next'); nb.hidden = false;
+  nb.textContent = lastQ ? 'CONCLUIR VIAGEM ▲' : 'PRÓXIMO SALTO ▲';
+  if (lastQ) $('#hud-prompt').textContent = 'VIAGEM CONCLUÍDA';
+}
+
+function next() {
+  if (S.phase !== 'reveal' || performance.now() - S.revealAt < 350) return;
+  if (S.i === ROUND_SIZE - 1) { hyperjump(showEnd, 'RETORNANDO À BASE'); return; }
+  S.i++;
+  hyperjump(showPrompt);
+}
+
+/* --- transição hiperespacial --- */
+function hyperjump(after, label = 'SALTO HIPERESPACIAL') {
+  S.phase = 'warp';
+  const id = ++S.jumpId;
+  $('#btn-next').hidden = true;
+  restartAnim(center, 'warp-out');
+  warpTarget = 1; SFX.warp();
+  const wt = $('#warp-text'); wt.textContent = label; wt.classList.add('on');
+  setTimeout(() => $('#warp-flash').classList.add('on'), 750);
+  setTimeout(() => {
+    if (id === S.jumpId) after();
+    warpTarget = 0; wt.classList.remove('on');
+    $('#warp-flash').classList.remove('on');
+    center.classList.remove('warp-out'); restartAnim(center, 'warp-in');
+  }, 950);
+}
+
+function countUp(el, from, to, ms) {
+  const t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(from + (to - from) * e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* =====================================================================
+   TELA FINAL
+   ===================================================================== */
+const DIST_MEAN = 230, DIST_SD = 85;   // distribuição simulada dos "exploradores de hoje"
+function erf(x) {
+  const t = 1 / (1 + .3275911 * Math.abs(x));
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x);
+  return x >= 0 ? y : -y;
+}
+const cdf = s => .5 * (1 + erf((s - DIST_MEAN) / (DIST_SD * Math.SQRT2)));
+
+function drawGauss(score) {
+  const max = ROUND_SIZE * 100, X0 = 14, X1 = 326, Y0 = 104, HGT = 86;
+  const sx = s => X0 + (s / max) * (X1 - X0);
+  const pdf = s => Math.exp(-.5 * ((s - DIST_MEAN) / DIST_SD) ** 2);
+  let d = `M${X0},${Y0}`;
+  for (let s = 0; s <= max; s += 5) d += ` L${sx(s).toFixed(1)},${(Y0 - pdf(s) * HGT).toFixed(1)}`;
+  const area = d + ` L${X1},${Y0} Z`;
+  const ys = Y0 - pdf(score) * HGT, xs = sx(Math.min(score, max));
+  let ticks = '';
+  for (let s = 0; s <= max; s += 100) {
+    const you = Math.abs(s - score) < 40;
+    ticks += `<line x1="${sx(s)}" y1="${Y0}" x2="${sx(s)}" y2="${Y0 + 5}" stroke="#7d8db0"/>`;
+    if (!you) ticks += `<text x="${sx(s)}" y="${Y0 + 20}" fill="#7d8db0" font-family="VT323" font-size="15" text-anchor="middle">${s}</text>`;
+  }
+  $('#gauss').innerHTML = `
+    <defs><linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd4ff" stop-opacity=".35"/><stop offset="1" stop-color="#5fd4ff" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="#56607a" stroke-width="2"/>
+    <path d="${area}" fill="url(#gf)"/>
+    <path d="${d}" fill="none" stroke="#5fd4ff" stroke-width="2.5"/>
+    ${ticks}
+    <line x1="${xs}" y1="${ys}" x2="${xs}" y2="${Y0 + 6}" stroke="#ff5c8a" stroke-width="2.5"/>
+    <rect x="${xs - 4}" y="${ys - 4}" width="8" height="8" fill="#ff5c8a"/>
+    <text x="${xs}" y="${Y0 + 21}" fill="#ff5c8a" font-family="Silkscreen" font-size="11" text-anchor="middle">VOCÊ</text>`;
+}
+
+const LANES = { vazio: 4, comum: 24, incomum: 46, raro: 68, lendario: 90 };
+function buildLog() {
+  const plot = $('#plot'); plot.innerHTML = '';
+  const lanes = [['vazio', '0'], ['comum', '+10'], ['incomum', '+100'], ['raro', '+300'], ['lendario', '+600']];
+  plot.insertAdjacentHTML('beforeend', `<div class="lane ground" style="bottom:0"><span>AL</span></div>`);
+  for (const [k, label] of lanes) if (k !== 'vazio')
+    plot.insertAdjacentHTML('beforeend', `<div class="lane" style="bottom:${LANES[k]}%"><span style="color:${TIERS[k].color}">${label}</span></div>`);
+  S.results.forEach((r, i) => {
+    const x = ((i + .5) / ROUND_SIZE * 100).toFixed(2) + '%', T = TIERS[r.tier], delay = (i * .12).toFixed(2) + 's';
+    plot.insertAdjacentHTML('beforeend',
+      `<div class="stem" style="left:${x};height:${LANES[r.tier]}%;background:${T.color};animation-delay:${delay}"></div>` +
+      `<img src="${spriteURL(r.tier)}" alt="${T.name}" style="left:${x};bottom:${LANES[r.tier]}%;animation-delay:${delay}">` +
+      `<span class="colnum" style="left:${x}">${i + 1}</span>`);
+  });
+}
+
+function buildAnswers() {
+  $('#answers').innerHTML = S.results.map((r, i) => {
+    const T = TIERS[r.tier];
+    return `<li class="panel"><span class="n">${String(i + 1).padStart(2, '0')}</span><div>
+      <div class="q">${esc(r.q)}</div>
+      <div class="a"><span>${r.answer ? '“' + esc(r.answer) + '”' : '<span style="color:var(--dim)">sem resposta</span>'}</span>
+      <b style="color:${T.color}">${T.name} · +${T.pts}</b></div></div></li>`;
+  }).join('');
+}
+
+function percentile() {
+  if (S.score <= 0) return 0;
+  return Math.max(1, Math.min(99, Math.round(cdf(S.score) * 100)));
+}
+
+function showEnd() {
+  S.phase = 'end';
+  const st = store.get();
+  st.played = (st.played || 0) + 1;
+  st.best = Math.max(st.best || 0, S.score);
+  st.bestDist = Math.max(st.bestDist || 0, S.dist);
+  store.set(st);
+
+  switchScreen('end');
+  $('#screen-end').scrollTop = 0;
+  $('#end-title').textContent = (S.daily ? `VIAGEM #${S.voyage}` : 'VIAGEM LIVRE') + ' CONCLUÍDA';
+  countUp($('#end-score'), 0, S.score, 1200);
+  $('#end-dist').textContent = fmt(S.dist) + ' AL';
+  drawGauss(S.score);
+  const pct = percentile();
+  $('#end-pct').innerHTML = `SUA VIAGEM FOI MAIS LONGE QUE <b>${pct}%</b> DOS EXPLORADORES HOJE`;
+  buildLog(); buildAnswers();
+  $('#end-stats').textContent = `VIAGENS ${st.played} · RECORDE ${st.best} PTS · ${fmt(st.bestDist)} AL`;
+}
+
+function share() {
+  const pct = percentile();
+  const text = `COSMION ${S.daily ? '#' + S.voyage : '(viagem livre)'} 🚀\n${S.score} PTS · ${fmt(S.dist)} AL · melhor que ${pct}%\n${S.results.map(r => TIERS[r.tier].emoji).join('')}`;
+  if (navigator.share) { navigator.share({ text }).catch(() => {}); return; }
+  const done = () => toast('COPIADO!');
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+  else fallbackCopy(text, done);
+}
+function fallbackCopy(text, cb) {
+  const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch (e) { toast('NÃO FOI POSSÍVEL COPIAR'); }
+  ta.remove();
+}
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast.id); toast.id = setTimeout(() => t.classList.remove('on'), 1800);
+}
+
+/* =====================================================================
+   MENU / SOM / EVENTOS
+   ===================================================================== */
+function openMenu() {
+  if (S.phase === 'prompt' && S.timerId) S.pausedAt = performance.now();
+  $('#btn-quit').hidden = S.screen !== 'game';
+  $('#menu').hidden = false;
+}
+function closeMenu() {
+  $('#menu').hidden = true;
+  if (S.pausedAt) { S.timerStart += performance.now() - S.pausedAt; S.pausedAt = 0; if (S.phase === 'prompt') input.focus(); }
+}
+function quit() {
+  S.jumpId++; stopTimer(); S.pausedAt = 0; $('#menu').hidden = true;
+  S.phase = 'intro'; S.dist = 0; displayDist = 0; drifts = [];
+  introMeta(); switchScreen('intro');
+}
+function toggleSound() {
+  muted = !muted;
+  $('#snd-on').style.display = muted ? 'none' : ''; $('#snd-off').style.display = muted ? '' : 'none';
+  if (!muted) tone(880, .06);
+}
+
+$('#btn-start').addEventListener('click', () => newVoyage(true));
+$('#btn-again').addEventListener('click', () => newVoyage(false));
+$('#btn-share').addEventListener('click', share);
+$('#btn-next').addEventListener('click', next);
+$('#btn-menu').addEventListener('click', openMenu);
+$('#btn-resume').addEventListener('click', closeMenu);
+$('#btn-quit').addEventListener('click', quit);
+$('#btn-sound').addEventListener('click', toggleSound);
+$('#menu').addEventListener('click', e => { if (e.target.id === 'menu') closeMenu(); });
+$('#answer-form').addEventListener('submit', e => { e.preventDefault(); submit(false); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { $('#menu').hidden ? (S.screen === 'game' && openMenu()) : closeMenu(); return; }
+  if (e.key === 'Enter' && S.phase === 'reveal' && $('#menu').hidden) { e.preventDefault(); next(); }
+});
+
+/* ---------------- boot ---------------- */
+resize();
+renderEarth(0);
+buildLegend($('#legend'));
+buildLegend($('#legend-modal'));
+introMeta();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
