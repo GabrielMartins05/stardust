@@ -157,6 +157,7 @@
   #answer::placeholder { color: #43557a; }
   #answer-form .big-btn { font-size: 13px; padding: 0 16px 0 20px; letter-spacing: .22em; }
   .shake { animation: shake .3s; }
+  .answer-msg { color: var(--pink); font-size: 20px; letter-spacing: .06em; text-align: center; text-shadow: 0 0 8px rgba(255,92,138,.4); }
   @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
   #btn-next { margin: 6px 0 4px; }
 
@@ -290,6 +291,7 @@
           <input id="answer" type="text" maxlength="40" placeholder="sua resposta..." autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="go">
           <button type="submit" class="big-btn">VIAJAR ▲</button>
         </div>
+        <p id="answer-msg" class="answer-msg" role="status" aria-live="polite" hidden></p>
       </form>
       <button id="btn-next" class="big-btn" hidden>PRÓXIMO SALTO ▲</button>
     </footer>
@@ -321,7 +323,8 @@
     <h3>COMO JOGAR</h3>
     <p>Você parte da órbita da Terra. A cada transmissão, responda algo <b>válido</b> — mas o <b>mais raro possível</b>.</p>
     <p>Respostas óbvias viram poeira estelar. Respostas que quase ninguém dá abrem um buraco negro e te arremessam milhares de anos-luz adiante.</p>
-    <p>Resposta inválida ou tempo esgotado: <span style="color:var(--pink)">SEM SINAL</span> — 0 AL, 0 PTS.</p>
+    <p>Resposta inválida? Aparece um aviso e você pode tentar outra enquanto o tempo durar.</p>
+    <p>Tempo esgotado sem resposta válida: <span style="color:var(--pink)">SEM SINAL</span> — 0 AL, 0 PTS.</p>
     <ul class="legend" id="legend-modal"></ul>
     <div class="row">
       <button class="big-btn" id="btn-resume">CONTINUAR</button>
@@ -449,11 +452,251 @@ const QUESTIONS = [
       raro: 'Hindi, Grego, Hebraico, Latim, Holandês|Neerlandês, Turco, Sueco, Polonês, Tupi, Guarani, Esperanto, Libras, Catalão, Norueguês, Dinamarquês, Finlandês, Ucraniano, Persa|Farsi, Bengali, Suaíli|Swahili, Tailandês, Vietnamita, Indonésio, Romeno, Húngaro, Tcheco, Cantonês',
       lendario: 'Basco|Euskera, Galês, Gaélico|Irlandês, Islandês, Quéchua, Aimará, Náuatle|Nahuatl, Klingon, Élfico|Quenya|Sindarin, Zulu, Xhosa, Iorubá|Yoruba, Amárico, Tâmil, Urdu, Punjabi, Mongol, Tibetano, Sânscrito, Aramaico, Maori, Havaiano, Estoniano, Letão, Lituano, Maltês, Georgiano, Armênio, Cazaque, Uzbeque, Tagalo, Malaio, Khmer, Birmanês, Laosiano, Nheengatu, Yanomami, Kaingang, Ladino, Iídiche, Occitano, Bretão, Corso, Sardo, Frísio, Romanche, Crioulo Haitiano, Tok Pisin, Galego, Dothraki, Alto Valiriano, Na\'vi',
     } },
+  { q: 'Cite um país da América do Sul',
+    strip: ['republica da', 'republica do', 'republica'],
+    tiers: {
+      comum: 'Brasil, Argentina',
+      incomum: 'Chile, Uruguai, Paraguai, Peru, Colômbia, Venezuela, Bolívia',
+      raro: 'Equador',
+      lendario: 'Guiana, Suriname, Guiana Francesa',
+    } },
+  { q: 'Cite um país da África',
+    strip: ['republica da', 'republica do', 'republica de', 'republica'],
+    tiers: {
+      comum: 'Egito, África do Sul, Nigéria, Angola, Moçambique',
+      incomum: 'Marrocos, Quênia, Etiópia, Gana, Cabo Verde, Senegal, Camarões, Argélia, Tunísia, Congo|República Democrática do Congo|RDC, Madagascar, Líbia, Somália, Sudão',
+      raro: 'Guiné-Bissau, São Tomé e Príncipe, Ruanda, Uganda, Tanzânia, Zimbábue, Zâmbia, Namíbia, Costa do Marfim, Mali, Níger, Chade, Botsuana, Sudão do Sul, Serra Leoa, Libéria, Mauritânia, Guiné, Guiné Equatorial, Gabão, Burkina Faso, Benin, Togo, Malawi',
+      lendario: 'Eritreia, Djibuti, Comores, Seicheles, Maurício|Ilhas Maurício, Lesoto, Essuatíni|Suazilândia, Burundi, Gâmbia, República Centro-Africana, Saara Ocidental',
+    } },
+  { q: 'Cite um país da Ásia',
+    strip: ['republica da', 'republica do', 'republica'],
+    tiers: {
+      comum: 'China, Japão, Índia, Coreia do Sul|Coreia',
+      incomum: 'Tailândia, Vietnã, Indonésia, Filipinas, Coreia do Norte, Israel, Arábia Saudita, Irã, Iraque, Turquia, Rússia, Paquistão, Afeganistão, Síria, Emirados Árabes|Emirados Árabes Unidos, Singapura|Cingapura, Malásia, Catar|Qatar',
+      raro: 'Nepal, Mongólia, Camboja, Laos, Mianmar|Birmânia, Bangladesh, Sri Lanka, Líbano, Jordânia, Kuwait, Omã, Iêmen, Taiwan, Cazaquistão, Uzbequistão, Bahrein, Palestina, Timor-Leste, Geórgia, Armênia, Azerbaijão',
+      lendario: 'Butão, Brunei, Maldivas, Quirguistão, Tadjiquistão, Turcomenistão, Chipre',
+    } },
+  { q: 'Cite um estado brasileiro',
+    strip: ['estado de', 'estado do', 'estado da', 'estado'],
+    tiers: {
+      comum: 'São Paulo, Rio de Janeiro, Minas Gerais, Bahia',
+      incomum: 'Rio Grande do Sul, Paraná, Santa Catarina, Pernambuco, Ceará, Amazonas, Goiás, Pará, Espírito Santo, Distrito Federal',
+      raro: 'Maranhão, Piauí, Paraíba, Rio Grande do Norte, Alagoas, Sergipe, Mato Grosso, Mato Grosso do Sul, Tocantins',
+      lendario: 'Acre, Amapá, Roraima, Rondônia',
+    } },
+  { q: 'Cite um time de futebol brasileiro',
+    strip: ['time', 'clube'],
+    tiers: {
+      comum: 'Flamengo|Mengão, Corinthians|Timão, Palmeiras|Verdão, São Paulo, Santos, Vasco|Vasco da Gama',
+      incomum: 'Grêmio, Internacional|Inter, Cruzeiro, Atlético Mineiro|Atlético-MG|Galo, Fluminense, Botafogo, Bahia, Sport|Sport Recife, Fortaleza, Athletico Paranaense|Athletico-PR|Atlético Paranaense',
+      raro: 'Vitória, Ceará, Coritiba, Goiás, Juventude, Ponte Preta, Guarani, América Mineiro|América-MG, Bragantino|Red Bull Bragantino, Cuiabá, Chapecoense, Avaí, Figueirense, Náutico, Santa Cruz, Paysandu, Remo, Criciúma, Atlético Goianiense, Portuguesa, Paraná Clube, CRB, CSA',
+      lendario: 'Mirassol, Novorizontino, Ituano, Botafogo-SP, ABC, América-RN, Sampaio Corrêa, Vila Nova, Operário, Londrina, Tombense, Juazeirense, Ferroviária, XV de Piracicaba, Bangu, Madureira, Olaria, São Caetano, Ypiranga, Brasil de Pelotas, Caxias, Confiança, Treze, Campinense, Botafogo-PB, Volta Redonda, Manaus FC, Amazonas FC, Moto Club, River-PI, Altos, Ceilândia, Gama, Brasiliense, Joinville, Tuna Luso, Água Santa, Inter de Limeira, Juventus, Nacional',
+    } },
+  { q: 'Cite um mamífero',
+    strip: ['animal'],
+    tiers: {
+      comum: 'Cachorro|Cão, Gato, Leão, Elefante, Vaca, Cavalo, Macaco, Baleia, Ser humano|Humano|Homem',
+      incomum: 'Tigre, Urso, Girafa, Zebra, Rato, Coelho, Porco, Ovelha, Cabra|Bode, Golfinho, Morcego, Onça|Onça-pintada, Lobo, Raposa, Camelo, Hipopótamo, Rinoceronte, Canguru, Gorila, Panda, Burro|Jumento, Esquilo, Chimpanzé, Boi, Rato, Camundongo',
+      raro: 'Preguiça, Tamanduá, Capivara, Tatu, Anta, Ornitorrinco, Coala, Lontra, Castor, Hiena, Guepardo|Chita, Leopardo, Alce, Veado|Cervo, Bisão, Lhama, Alpaca, Ouriço, Toupeira, Hamster, Porquinho-da-índia, Javali, Foca, Morsa, Orangotango, Suricato, Doninha, Furão, Mico-leão-dourado, Bugio, Gambá, Quati, Lobo-guará, Jaguatirica, Peixe-boi, Búfalo, Iaque, Gnu, Antílope, Gazela, Lince, Puma|Suçuarana, Sagui|Mico',
+      lendario: 'Equidna, Ocapi|Okapi, Pangolim, Aye-aye, Társio, Lêmure, Dugongo, Narval, Vombate, Diabo-da-tasmânia, Numbat, Quokka, Saiga, Bonobo, Gibão, Mandril, Babuíno, Fossa, Caracal, Serval, Binturong, Cuíca, Paca, Cutia, Ariranha, Irara, Porco-espinho, Musaranho, Ratel|Texugo-do-mel, Texugo, Marta, Arminho, Chinchila, Hipopótamo-pigmeu, Elefante-marinho, Boto|Boto-cor-de-rosa, Cachalote, Pudu, Vicunha, Guanaco, Dromedário, Zebu, Tapir, Colugo, Hirax, Aardvark|Porco-formigueiro, Lebre, Marmota, Chinchila, Degu, Gerbil',
+    } },
+  { q: 'Cite uma ave',
+    strip: ['passaro', 'ave'],
+    tiers: {
+      comum: 'Galinha, Pombo, Papagaio, Águia, Pinguim, Pato',
+      incomum: 'Coruja, Arara, Tucano, Beija-flor, Avestruz, Pavão, Peru, Gaivota, Urubu, Canário, Bem-te-vi, Sabiá, Periquito, Falcão, Cisne, Flamingo, Ganso, Corvo, Pardal, Andorinha, Galo',
+      raro: 'Pica-pau, João-de-barro, Emu, Ema, Seriema, Gavião, Garça, Pelicano, Cegonha, Albatroz, Quero-quero, Codorna, Faisão, Cacatua, Calopsita, Kiwi, Condor, Abutre, Rouxinol, Melro, Pintassilgo, Curió, Coleiro, Tico-tico, Maritaca, Jandaia, Martim-pescador, Biguá, Colibri, Coruja-buraqueira, Harpia|Gavião-real',
+      lendario: 'Casuar, Dodô, Kakapo, Tuiuiú|Jaburu, Ararajuba, Uirapuru, Guará, Mutum, Jacu, Inhambu, Socó, Cardeal, Tangará, Saíra, Sanhaço, Corrupião, Azulão, Trinca-ferro, Araponga, Jaó, Anu, Saracura, Fragata, Atobá, Papagaio-do-mar|Puffin, Ave-lira, Ave-do-paraíso, Calau, Bico-de-sapato, Secretário, Marabu, Íbis, Colhereiro, Grou, Abetarda, Petrel, Mergulhão, Quetzal, Cuco, Bacurau, Urutau|Mãe-da-lua, Tiê-sangue, Cabeça-seca, Carcará',
+    } },
+  { q: 'Cite um inseto',
+    strip: [],
+    tiers: {
+      comum: 'Formiga, Mosca, Barata, Abelha, Mosquito|Pernilongo, Borboleta',
+      incomum: 'Besouro, Joaninha, Gafanhoto, Grilo, Libélula, Cupim, Vespa|Marimbondo, Pulga, Piolho, Mariposa, Vaga-lume|Pirilampo, Cigarra, Lagarta',
+      raro: 'Louva-a-deus, Bicho-pau, Percevejo, Traça, Esperança, Besouro-rinoceronte, Escaravelho, Mamangava, Pulgão, Mosca-das-frutas, Barbeiro, Aedes aegypti|Aedes, Borrachudo, Mutuca, Maruim, Tesourinha, Bicho-da-seda, Cochonilha, Gorgulho, Caruncho, Lacerdinha, Efêmera',
+      lendario: 'Bicho-folha|Inseto-folha, Formiga-leão, Jequitiranaboia, Besouro-golias, Besouro-hércules, Vespa-mandarina, Saúva, Tanajura|Içá, Formiga-bala|Tocandira, Cascudo, Rola-bosta, Serra-pau, Paquinha, Bicho-de-pé, Varejeira, Mosca-tsé-tsé, Jataí, Uruçu, Mandaçaia, Arapuá, Bicho-lixeiro, Mosca-escorpião, Cigarrinha, Tripes, Psocóptero, Cavalinho-do-diabo',
+    } },
+  { q: 'Cite um legume ou verdura',
+    strip: ['legume', 'verdura'],
+    tiers: {
+      comum: 'Alface, Tomate, Cenoura, Batata, Cebola, Brócolis',
+      incomum: 'Couve, Repolho, Pepino, Abobrinha, Abóbora, Beterraba, Chuchu, Espinafre, Rúcula, Pimentão, Berinjela, Couve-flor, Mandioca|Aipim|Macaxeira, Milho, Ervilha, Vagem, Quiabo, Alho, Feijão',
+      raro: 'Agrião, Almeirão, Chicória, Escarola, Acelga, Aspargo, Alcachofra, Rabanete, Nabo, Inhame, Cará, Batata-doce, Mandioquinha|Batata-baroa|Batata-salsa, Jiló, Maxixe, Salsão|Aipo, Alho-poró, Gengibre, Palmito, Taioba, Ora-pro-nóbis, Couve-de-bruxelas, Repolho-roxo, Lentilha, Grão-de-bico',
+      lendario: 'Bertalha, Serralha, Beldroega, Caruru, Jambu, Vinagreira, Peixinho-da-horta, Mostarda, Endívia, Radicchio, Pak choi, Kale, Couve-rábano, Tupinambo, Yacon, Bardana, Chirívia|Pastinaca, Rutabaga, Cardo, Funcho|Erva-doce, Cebolinha, Salsinha, Coentro, Azedinha, Moranga, Cabotiá, Fava, Edamame, Broto de bambu, Broto de feijão, Shimeji, Cogumelo',
+    } },
+  { q: 'Cite uma cor',
+    strip: ['cor'],
+    tiers: {
+      comum: 'Azul, Vermelho, Verde, Amarelo, Preto, Branco',
+      incomum: 'Rosa, Roxo, Laranja, Cinza, Marrom, Lilás, Bege, Violeta, Dourado, Prata|Prateado',
+      raro: 'Turquesa, Vinho, Bordô, Salmão, Magenta, Ciano, Anil|Índigo, Creme, Caramelo, Lavanda, Fúcsia, Coral, Marfim, Grafite, Mostarda, Ocre, Escarlate, Carmim, Esmeralda, Oliva|Verde-oliva, Azul-marinho, Pêssego, Chumbo, Areia, Nude, Off-white, Terracota',
+      lendario: 'Cerúleo, Púrpura, Sépia, Ameixa, Ébano, Âmbar, Cobre, Bronze, Cáqui, Champanhe, Jade, Malva, Ferrugem, Siena, Chartreuse, Celadon, Glauco, Gris, Alabastro, Zinabre, Vermelhão, Lápis-lazúli, Ultramar, Azul-cobalto|Cobalto, Azul-petróleo|Petróleo, Verde-musgo|Musgo, Menta|Verde-menta, Pistache, Cereja, Rubi, Safira, Topázio, Ônix, Cinábrio, Taupe, Água-marinha',
+    } },
+  { q: 'Cite um esporte',
+    strip: [],
+    tiers: {
+      comum: 'Futebol, Vôlei|Voleibol, Basquete|Basquetebol, Natação, Tênis',
+      incomum: 'Handebol, Futsal, Atletismo, Ciclismo, Boxe, Judô, Surfe|Surf, Skate, Corrida, Ginástica, Jiu-jitsu, MMA, Fórmula 1|Automobilismo, Xadrez, Karatê, Tênis de mesa|Pingue-pongue',
+      raro: 'Rúgbi|Rugby, Beisebol, Golfe, Hóquei, Polo aquático, Esgrima, Remo, Canoagem, Taekwondo, Capoeira, Escalada, Badminton, Críquete, Futebol americano, Vôlei de praia, Futevôlei, Triatlo, Hipismo, Levantamento de peso|Halterofilismo, Saltos ornamentais, Nado artístico|Nado sincronizado, Tiro com arco|Arco e flecha, Muay thai, Kickboxing, Wrestling|Luta livre, Patinação, Snowboard, Esqui, Mergulho, Paraquedismo, Vela, Kitesurf, Motocross, Bocha, Sinuca|Bilhar, Boliche, Dardos, Parkour, Padel, Squash',
+      lendario: 'Curling, Bobsled, Luge, Skeleton, Biatlo, Pentatlo moderno, Lacrosse, Hurling, Sepak takraw, Kabaddi, Corfebol|Korfball, Pelota basca, Bandy, Floorball, Netball, Ultimate frisbee|Ultimate, Peteca, Malha, Tamboréu, Polo, Sumô, Kendo, Aikido, Sambo, Slackline, Biribol, Bete|Taco, Frescobol, Bodyboard, Stand up paddle|SUP, Orientação, Quadribol, Xadrez-boxe, Teqball, Pickleball, Rafting, Rapel, Highline, Canicross',
+    } },
+  { q: 'Cite uma profissão',
+    strip: [],
+    tiers: {
+      comum: 'Médico, Professor, Advogado, Engenheiro, Policial, Bombeiro',
+      incomum: 'Enfermeiro, Dentista, Cozinheiro|Chef, Motorista, Pedreiro, Arquiteto, Jornalista, Programador, Veterinário, Psicólogo, Contador, Vendedor, Ator, Cantor, Piloto, Garçom, Padeiro, Mecânico, Eletricista, Cabeleireiro, Fotógrafo, Astronauta',
+      raro: 'Farmacêutico, Fisioterapeuta, Nutricionista, Biólogo, Químico, Físico, Astrônomo, Geólogo, Economista, Juiz, Promotor, Diplomata, Carteiro, Encanador, Marceneiro, Carpinteiro, Jardineiro, Agricultor, Pescador, Açougueiro, Costureira|Costureiro, Alfaiate, Bibliotecário, Tradutor, Intérprete, Designer, Publicitário, Escritor, Historiador, Arqueólogo, Sociólogo, Filósofo, Músico, Bailarino, Palhaço, Mágico, Comissário de bordo, Taxista, Frentista, Caixa, Faxineiro, Porteiro, Segurança, Detetive, Soldado',
+      lendario: 'Ourives, Relojoeiro, Ferreiro, Sapateiro, Luthier, Taxidermista, Sommelier, Barista, Leiloeiro, Atuário, Cartógrafo, Paleontólogo, Vulcanólogo, Oceanógrafo, Sismólogo, Entomologista, Ornitólogo, Herpetólogo, Meteorologista, Cervejeiro, Apicultor, Vidraceiro, Serralheiro, Funileiro, Calígrafo, Restaurador, Curador, Embalsamador, Coveiro, Escafandrista, Estivador, Seringueiro, Garimpeiro, Vaqueiro, Peão, Domador, Malabarista, Ventríloquo, Dublê, Dublador, Tabelião, Perito, Legista, Anestesista, Podólogo, Fonoaudiólogo, Quiropraxista, Acupunturista, Doula, Parteira, Mordomo, Governanta, Engraxate, Amolador, Chaveiro, Gesseiro, Azulejista, Escultor, Ceramista, Tatuador, Influenciador, Youtuber, Streamer',
+    } },
+  { q: 'Cite um gênero musical',
+    strip: ['musica', 'genero'],
+    tiers: {
+      comum: 'Funk, Sertanejo, Rock, Pop, Samba, Pagode',
+      incomum: 'Rap, MPB, Forró, Gospel, Eletrônica|Música eletrônica, Jazz, Reggae, Axé, Trap, Hip-hop, Clássica|Música clássica|Erudita, Bossa nova, Piseiro|Pisadinha, Brega, Arrocha, K-pop, Metal|Heavy metal',
+      raro: 'Blues, Country, Soul, R&B|Rhythm and blues, Punk, Reggaeton, Techno, House, Disco, Frevo, Maracatu, Baião, Xote, Choro|Chorinho, Tecnobrega, Lambada, Samba-enredo, Pagodão, Emo, Indie, Grunge, Gótico, Ópera, Salsa, Tango, Flamenco, Bolero, Fado, Kizomba, Zouk, Swingueira, Brega funk, Drum and bass, Dubstep, Trance, Lo-fi, Grime, Drill',
+      lendario: 'Shoegaze, Vaporwave, Synthwave, Chiptune, Krautrock, Ska, Dub, Afrobeat, Highlife, Cumbia, Merengue, Bachata, Mariachi, Polca, Zydeco, Bluegrass, Canto gregoriano|Gregoriano, Barroco, Madrigal, Manguebeat|Mangue beat, Carimbó, Siriá, Catira, Moda de viola, Calango, Coco, Embolada, Repente, Ciranda, Lundu, Maxixe, Jongo, Marchinha, Guarânia, Chamamé, Vaneira|Vanerão, Toada, Boi-bumbá, Música caipira, Doo-wop, Motown, Psicodelia|Rock psicodélico, Math rock, Post-rock, Djent, Black metal, Death metal, Thrash metal, Grindcore, Noise, Ambient, Amapiano, Gqom, Samba de roda, Samba rock, Partido-alto, Forró pé-de-serra',
+    } },
+  { q: 'Cite um deus da mitologia grega',
+    strip: ['deus', 'deusa'],
+    tiers: {
+      comum: 'Zeus, Poseidon, Hades, Afrodite, Atena|Atenas',
+      incomum: 'Apolo, Ártemis, Ares, Hermes, Hera, Hefesto, Dionísio|Baco, Eros|Cupido, Cronos, Gaia',
+      raro: 'Deméter, Perséfone, Héstia, Nix, Urano, Hélio|Hélios, Selene, Eos, Nêmesis, Tânatos, Hipnos, Morfeu, Pã, Íris, Hécate, Tique, Nice|Nike, Éolo, Prometeu, Atlas, Reia, Têmis, Caos',
+      lendario: 'Érebo, Tártaro, Éter, Hemera, Ponto, Oceano, Tétis, Mnemósine, Hiperíon, Ceos, Crio, Jápeto, Febe, Têia, Métis, Leto, Maia, Dione, Asclépio, Hebe, Ganimedes, Harmonia, Fobos, Deimos, Éris, Ate, Nereu, Proteu, Tritão, Anfitrite, Glauco, Hímeros, Anteros, Himeneu, Pluto, Bóreas, Zéfiro, Noto, Astreia, Estige, Caronte, Zagreu, Momo, Clio, Calíope, Tália, Terpsícore, Melpômene, Urânia, Euterpe, Erato, Polímnia',
+    } },
+  { q: 'Cite uma lua do Sistema Solar',
+    strip: ['lua'],
+    tiers: {
+      comum: 'Lua',
+      incomum: 'Europa, Io, Titã, Ganimedes, Fobos, Deimos',
+      raro: 'Calisto, Encélado, Tritão, Caronte, Mimas, Reia, Jápeto, Dione, Tétis, Oberon, Titânia, Miranda',
+      lendario: 'Ariel, Umbriel, Nereida, Proteu, Hipérion, Febe, Jano, Epimeteu, Pandora, Prometeu, Pã, Atlas, Amalteia, Himalia, Tebe, Métis, Adrasteia, Elara, Pasífae, Sinope, Carme, Lisiteia, Leda, Calipso, Telesto, Helena, Puck, Cordélia, Ofélia, Bianca, Créssida, Desdêmona, Julieta, Pórcia, Rosalinda, Belinda, Sicorax|Sycorax, Calibã|Caliban, Próspero, Setebos, Mab, Cupido, Perdita, Náiade, Talassa, Despina, Galateia, Larissa, Hipocampo, Halimede, Sao, Laomedeia, Psâmate, Neso, Nix, Hidra, Cérbero, Estige, Disnomia, Hiiaka, Namaka, Vanth, Weywot, Dáctilo|Dactyl',
+    } },
+  { q: 'Cite uma estrela (além do Sol)',
+    strip: ['estrela'],
+    tiers: {
+      comum: 'Sol, Sirius|Sírius',
+      incomum: 'Betelgeuse, Polaris|Estrela Polar|Estrela do Norte, Alfa Centauri|Alpha Centauri, Vega, Rigel, Próxima Centauri|Proxima Centauri, Três Marias',
+      raro: 'Aldebaran|Aldebarã, Antares, Arcturus|Arcturo, Canopus|Canopo, Capella, Deneb, Altair, Spica|Espiga, Pólux, Castor, Achernar|Aquernar, Regulus|Régulo, Fomalhaut, Bellatrix, Mintaka, Alnilam, Alnitak, Acrux|Estrela de Magalhães, Mimosa, Plêiades|Sete Estrelas',
+      lendario: 'Algol, Mira, Eta Carinae, VY Canis Majoris, UY Scuti, Estrela de Barnard|Barnard, Wolf 359, Lalande 21185, Tau Ceti, Epsilon Eridani, Gliese 581, TRAPPIST-1|Trappist, Kepler-452, Estrela de Tabby|Tabby, Sirius B, Procyon|Prócion, Alcor, Mizar, Dubhe, Merak, Alioth, Thuban, Shaula, Sargas, Hadar, Gacrux, Saiph, Alhena, Mirfak, Algenib, Markab, Scheat, Enif, Rasalhague, Vindemiatrix, Zubenelgenubi, Alcione|Alcyone, Electra, Maia, Taígeta, Mérope, Pleione, Cor Caroli, Kochab, Albireo, Sadr, Eltanin, Diphda, Hamal, Alpheratz, Menkar, Adhara, Wezen, Naos, Avior, Miaplacidus, Suhail, Alphard, Denebola, Zosma, Nunki, Kaus Australis, Peacock, Atria, Ankaa',
+    } },
+  { q: 'Cite um super-herói',
+    strip: ['heroi', 'super heroi'],
+    tiers: {
+      comum: 'Homem-Aranha, Batman, Superman|Super-Homem, Mulher-Maravilha, Homem de Ferro',
+      incomum: 'Capitão América, Thor, Hulk, Flash, Pantera Negra, Wolverine, Viúva Negra, Aquaman, Lanterna Verde, Capitã Marvel, Doutor Estranho, Deadpool, Homem-Formiga, Gavião Arqueiro, Feiticeira Escarlate, Ciclope, Tempestade, Robin',
+      raro: 'Visão, Falcão, Soldado Invernal, Groot, Rocket, Senhor das Estrelas|Star-Lord, Gamora, Drax, Mulher-Hulk, Demolidor, Justiceiro, Motoqueiro Fantasma, Blade, Cavaleiro da Lua, Shang-Chi, Ms. Marvel|Miss Marvel, Vespa, Noturno, Fera, Vampira, Jean Grey|Fênix, Professor X|Professor Xavier, Mulher-Gato, Batgirl, Asa Noturna, Supergirl, Shazam, Ciborgue, Arqueiro Verde, Caçador de Marte, Besouro Azul, Senhor Fantástico|Homem-Elástico, Mulher Invisível, Tocha Humana, Coisa, Surfista Prateado, Spawn, Hellboy, Capitão Planeta, Mulher-Aranha, Miles Morales, Spider-Gwen|Gwen Stacy',
+      lendario: 'Elektra, Luke Cage, Punho de Ferro, Jessica Jones, Nova, Adam Warlock, Sentinela, Namor, Homem de Gelo, Anjo|Arcanjo, Colossus, Lince Negra|Kitty Pryde, Jubileu, Gambit, Cable, Bishop, Psylocke, Cristal, Raio Negro, Medusa, Kate Bishop, Kamala Khan, America Chavez, Garota Esquilo, Manto e Adaga, Gavião Negro|Mulher-Gavião, Átomo, Zatanna, Constantine, Ravena|Raven, Estelar, Mutano, Kid Flash, Aqualad, Moça-Maravilha, Superboy, Gladiador Dourado|Booster Gold, Homem-Borracha|Plastic Man, Monstro do Pântano, Questão, Rorschach, Doutor Manhattan|Dr. Manhattan, Espectro, Super Choque|Static, Capitão Átomo, Nuclear|Firestorm, Vixen, Homem-Animal, Metamorfo, Canário Negro, Caçadora, Oráculo, Azrael, Hit-Girl, Kick-Ass, Invencível, Jaspion, Jiraiya, Changeman, Ultraman, All Might, Saitama, Sailor Moon',
+    } },
+  { q: 'Cite uma raça de cachorro',
+    strip: ['raca', 'cachorro', 'cao'],
+    tiers: {
+      comum: 'Vira-lata|SRD|Caramelo|Vira-lata caramelo, Poodle, Pinscher, Shih Tzu, Labrador, Pastor Alemão, Golden Retriever|Golden',
+      incomum: 'Pitbull|Pit bull, Rottweiler, Bulldog|Buldogue, Buldogue Francês|Bulldog Francês, Chihuahua, Yorkshire, Husky|Husky Siberiano, Dálmata, Beagle, Dachshund|Salsicha|Linguicinha, Pug, Lhasa Apso, Maltês, Border Collie, Spitz|Lulu da Pomerânia, Boxer, Chow Chow, Doberman',
+      raro: 'Akita, Shiba Inu|Shiba, Basset Hound|Basset, São Bernardo, Dogue Alemão, Fila Brasileiro|Fila, Pastor Belga|Malinois, Cocker Spaniel|Cocker, Schnauzer, Weimaraner, Bull Terrier, Collie, Corgi, Galgo|Greyhound, Samoieda, Malamute|Malamute do Alasca, Shar-pei, Mastim|Mastiff, Terra-nova, Bernese, Jack Russell, Cavalier King Charles|Cavalier, Bichon Frisé, Pequinês, Dogo Argentino, Cane Corso, Pastor Australiano, Pastor de Shetland|Sheltie, Boston Terrier, Whippet, Galgo Afegão|Afghan Hound, Staffordshire|Staffbull, American Bully|Bully, Bloodhound, Setter Irlandês',
+      lendario: 'Xoloitzcuintle|Pelado Mexicano, Basenji, Komondor, Puli, Lagotto Romagnolo, Saluki, Borzoi, Bedlington Terrier, Leonberger, Tosa, Mudi, Azawakh, Kooikerhondje, Otterhound, Norwich Terrier, Sloughi, Catahoula, Kerry Blue Terrier, Clumber Spaniel, Affenpinscher, Papillon, Cão de Crista Chinês, Cão de Água Português, Rafeiro do Alentejo, Podengo, Ovelheiro Gaúcho, Buldogue Campeiro, Terrier Brasileiro|Fox Paulistinha, Veadeiro Pampeano, Dogue de Bordeaux, Bullmastiff, Mastim Napolitano, Mastim Tibetano, Pastor do Cáucaso, Kangal, Boerboel, Rhodesian Ridgeback, Cão do Faraó|Pharaoh Hound, Spinone, Braco Alemão|Pointer, Vizsla, Keeshond, Elkhound, Schipperke, Griffon de Bruxelas, Chinook, Lundehund, Jindo, Kai Ken, Shikoku, Hokkaido',
+    } },
+  { q: 'Cite um osso do corpo humano',
+    strip: ['osso'],
+    tiers: {
+      comum: 'Fêmur, Crânio, Costela, Coluna|Coluna vertebral|Vértebra',
+      incomum: 'Tíbia, Úmero, Rádio, Ulna|Cúbito, Clavícula, Patela|Rótula, Mandíbula|Maxilar, Fíbula|Perônio, Escápula|Omoplata, Esterno, Bacia|Pelve|Quadril, Cóccix',
+      raro: 'Sacro, Estribo, Martelo, Bigorna, Falange, Metacarpo, Metatarso, Calcâneo, Tálus|Astrágalo, Ílio, Ísquio, Púbis, Atlas, Áxis, Maxila, Frontal, Occipital, Parietal, Temporal, Hioide, Zigomático, Nasal, Carpo, Tarso',
+      lendario: 'Esfenoide, Etmoide, Vômer, Lacrimal, Palatino, Concha nasal, Escafoide, Semilunar, Piramidal, Pisiforme, Trapézio, Trapezoide, Capitato, Hamato|Unciforme, Cuboide, Navicular, Cuneiforme, Sesamoide, Manúbrio, Processo xifoide|Xifoide',
+    } },
+  { q: 'Cite um órgão do corpo humano',
+    strip: ['orgao'],
+    tiers: {
+      comum: 'Coração, Cérebro, Pulmão, Estômago, Fígado, Rim',
+      incomum: 'Intestino, Pele, Pâncreas, Bexiga, Baço, Olho, Útero, Esôfago, Tireoide, Vesícula|Vesícula biliar, Língua, Laringe',
+      raro: 'Apêndice, Ovário, Testículo, Próstata, Traqueia, Faringe, Diafragma, Duodeno, Cólon, Reto, Hipófise, Timo, Medula|Medula espinhal, Cerebelo, Suprarrenal|Adrenal, Uretra, Ureter, Placenta, Amígdala, Epiglote',
+      lendario: 'Pineal|Glândula pineal, Hipotálamo, Tálamo, Bulbo, Íleo, Jejuno, Ceco, Mesentério, Paratireoide, Epidídimo, Hipocampo, Corpo caloso, Vesícula seminal, Pleura, Pericárdio, Peritônio, Cóclea, Parótida|Glândula salivar, Linfonodo|Gânglio linfático, Medula óssea, Retina, Córnea, Íris, Cristalino, Trompa|Tuba uterina, Endométrio, Glândula lacrimal',
+    } },
+  { q: 'Cite uma moeda (dinheiro) de qualquer país ou época',
+    strip: ['moeda'],
+    tiers: {
+      comum: 'Real, Dólar, Euro',
+      incomum: 'Libra, Iene, Peso, Yuan|Renminbi, Bitcoin',
+      raro: 'Rublo, Rupia, Franco|Franco suíço, Won, Rand, Lira, Guarani, Boliviano, Sol, Bolívar, Coroa, Shekel, Dirham, Kwanza, Metical, Escudo, Cruzeiro, Cruzado, Réis|Mil-réis',
+      lendario: 'Zloty, Florim|Forint, Leu, Lev, Kuna, Dinar, Rial, Riyal, Taka, Kyat, Kip, Riel, Dong, Baht, Ringgit, Tugrik, Som, Tenge, Manat, Lari, Dram, Grívnia|Hryvnia, Birr, Naira, Cedi, Xelim|Shilling, Kwacha, Pula, Loti, Lilangeni, Ouguiya, Dalasi, Leone, Ariary, Dobra, Afegane, Rufiyaa, Ngultrum, Pataca, Dracma, Marco|Marco alemão, Peseta, Sestércio, Denário, Ducado, Dobrão, Cruzeiro real, URV, Ethereum, Dogecoin',
+    } },
+  { q: 'Cite uma linguagem de programação',
+    strip: ['linguagem'],
+    tiers: {
+      comum: 'Python, JavaScript|JS, Java, C',
+      incomum: 'C++, C#|C sharp, PHP, TypeScript, HTML, CSS, SQL, Ruby, Go|Golang, Swift, Kotlin',
+      raro: 'Rust, Lua, R, Dart, Scala, Perl, Assembly|Assembler, Visual Basic|VB, Delphi|Pascal, MATLAB, Bash|Shell, Objective-C, Haskell, Elixir, Julia, COBOL, Fortran, Groovy, PowerShell',
+      lendario: 'Lisp, Clojure, Erlang, OCaml, F#|F sharp, Prolog, Smalltalk, Ada, Scheme, Racket, Zig, Nim, Crystal, Elm, Brainfuck, Whitespace, APL, Forth, Logo, Scratch, BASIC, Simula, ALGOL, Haxe, Solidity, Vala, D, Mojo, Gleam, Odin, Hack, ABAP, Apex, Verilog, VHDL, LabVIEW, Malbolge, Piet, Befunge, Clipper, Portugol, VisuAlg',
+    } },
+  { q: 'Cite uma rede social ou aplicativo',
+    strip: ['app', 'aplicativo', 'rede social'],
+    tiers: {
+      comum: 'WhatsApp|Zap, Instagram|Insta, Facebook|Face, TikTok, YouTube',
+      incomum: 'Twitter|X, Telegram, Kwai, LinkedIn, Pinterest, Snapchat, Discord, Spotify, Netflix, Threads, Messenger',
+      raro: 'Reddit, Tumblr, Twitch, BeReal, Tinder, Bumble, Signal, WeChat, Clubhouse, Vine, Orkut, MSN|MSN Messenger, Skype, Flickr, Quora, Medium, Bluesky, Mastodon, Kick, Roblox, Duolingo, Uber, iFood, Waze',
+      lendario: 'Myspace, Fotolog, Google+|Google Plus, Hi5, Friendster, Periscope, Ask.fm|Askfm, Formspring, Habbo, Second Life, Badoo, Happn, Hinge, Line, Viber, KakaoTalk, VK|VKontakte, Weibo, Douyin, QQ, Xiaohongshu|RedNote, Truth Social, Parler, Steam, Letterboxd, Goodreads, Strava, Behance, Dribbble, DeviantArt, Wattpad, Skoob, Filmow, Tellonym, Yubo, Lemon8, Vero, Ello, Diaspora, Plurk, Mixi, Sonico',
+    } },
+  { q: 'Cite um prato ou doce típico brasileiro',
+    strip: ['prato', 'doce'],
+    tiers: {
+      comum: 'Feijoada, Arroz e feijão|Arroz com feijão, Churrasco, Coxinha, Pão de queijo, Brigadeiro',
+      incomum: 'Acarajé, Moqueca, Baião de dois, Escondidinho, Farofa, Pastel, Tapioca, Pamonha, Vatapá, Galinhada, Estrogonofe|Strogonoff, Feijão tropeiro|Tropeiro, Virado à paulista, Cuscuz, Canjica|Mungunzá, Quindim, Paçoca, Bolinho de chuva',
+      raro: 'Tacacá, Pato no tucupi, Maniçoba, Bobó de camarão|Bobó, Caruru, Arroz carreteiro|Carreteiro, Barreado, Picanha, Buchada, Sarapatel, Carne de sol, Paçoca de carne, Dobradinha, Rabada, Mocotó, Arroz de pequi, Empadão goiano, Frango com quiabo, Tutu de feijão|Tutu, Cuscuz paulista, Bolo de rolo, Cartola, Pé de moleque, Cocada, Romeu e Julieta, Pudim, Beijinho, Cajuzinho, Quentão, Chimarrão, Caipirinha, Açaí na tigela, Mingau, Curau, Sagu',
+      lendario: 'Arroz de cuxá|Cuxá, Caldeirada, Vaca atolada, Galinha à cabidela|Cabidela, Torta capixaba, Paçoca pilada, Pirão, Maria Isabel|Arroz Maria Isabel, Arrumadinho, Rubacão, Escaldado, Quibebe, Pirarucu de casaca, Caldo de piranha, Peixe na telha, Mojica, Furrundu, Chipa, Sopa paraguaia, Entrevero, Matambre, Cuca, Arroz doce, Bolo Souza Leão, Bolo de mandioca, Manauê, Queijadinha, Baba de moça, Sequilho, Bala de coco, Pé de moça, Bolinho de bacalhau, Dadinho de tapioca, Bauru, Beiju, Afogado, Cambuquira, Tapioca de coco, Cuscuz de tapioca',
+    } },
+  { q: 'Cite um pintor ou artista plástico',
+    strip: ['pintor', 'artista'],
+    tiers: {
+      comum: 'Leonardo da Vinci|Da Vinci|Leonardo, Van Gogh|Vincent van Gogh, Picasso|Pablo Picasso, Tarsila do Amaral|Tarsila',
+      incomum: 'Michelangelo, Monet|Claude Monet, Frida Kahlo|Frida, Salvador Dalí|Dalí, Romero Britto|Britto, Portinari|Candido Portinari, Rembrandt, Andy Warhol|Warhol, Anita Malfatti, Di Cavalcanti, Rafael|Raphael, Botticelli, Basquiat',
+      raro: 'Renoir, Degas, Cézanne, Gauguin, Matisse, Klimt, Munch|Edvard Munch, Vermeer, Goya, Velázquez, Caravaggio, Kandinsky, Mondrian, Magritte, Miró, Pollock|Jackson Pollock, Banksy, Rubens, Turner, Manet, Toulouse-Lautrec, Dürer, Bosch|Hieronymus Bosch, Bruegel, Seurat, Modigliani, Chagall, Hopper|Edward Hopper, Lichtenstein, Hokusai, Pedro Américo, Victor Meirelles, Almeida Júnior, Volpi|Alfredo Volpi, Lasar Segall, Ismael Nery, Beatriz Milhazes, Os Gêmeos, Kobra|Eduardo Kobra',
+      lendario: 'Tintoretto, Ticiano|Tiziano, Giotto, Fra Angelico, Piero della Francesca, Mantegna, Van Eyck|Jan van Eyck, Holbein, El Greco, Zurbarán, Murillo, Poussin, Watteau, Fragonard, Delacroix, Géricault, Ingres, Courbet, Millet, Corot, Pissarro, Sisley, Berthe Morisot|Morisot, Mary Cassatt|Cassatt, Bonnard, Vuillard, Egon Schiele|Schiele, Kokoschka, Paul Klee|Klee, Malevich, Rothko, De Kooning, Francis Bacon, Lucian Freud, David Hockney|Hockney, Diego Rivera|Rivera, Orozco, Siqueiros, Fernando Botero|Botero, Torres García, Xul Solar, Remedios Varo, Leonora Carrington, Lygia Clark, Hélio Oiticica, Guignard, Djanira, Heitor dos Prazeres, Abraham Palatnik, Tomie Ohtake, Iberê Camargo, Rugendas, Debret, Frans Post, Albert Eckhout|Eckhout, Artemisia Gentileschi, Hilma af Klint, Yayoi Kusama|Kusama, Ai Weiwei, Gerhard Richter, Anselm Kiefer, Keith Haring, Sorolla, John Singer Sargent|Sargent, Whistler, Wyeth, Norman Rockwell, Bob Ross',
+    } },
+  { q: 'Cite um cientista famoso',
+    strip: ['cientista'],
+    tiers: {
+      comum: 'Albert Einstein|Einstein, Isaac Newton|Newton, Galileu|Galileu Galilei, Charles Darwin|Darwin',
+      incomum: 'Marie Curie|Curie, Stephen Hawking|Hawking, Nikola Tesla|Tesla, Thomas Edison|Edison, Santos Dumont, Louis Pasteur|Pasteur, Copérnico, Gregor Mendel|Mendel, Aristóteles, Arquimedes, Pitágoras, Oswaldo Cruz, Carl Sagan|Sagan',
+      raro: 'Kepler, Faraday, Maxwell, Niels Bohr|Bohr, Heisenberg, Schrödinger, Feynman, Oppenheimer, Rutherford, Alexander Fleming|Fleming, Lavoisier, Mendeleev, Pavlov, Sigmund Freud|Freud, Alan Turing|Turing, Ada Lovelace, Hipócrates, Euclides, Tycho Brahe, Edwin Hubble|Hubble, Volta, Ampère, James Watt|Watt, Graham Bell, Carlos Chagas, Vital Brazil, César Lattes, Adolfo Lutz, Alfred Nobel|Nobel, Linus Pauling, Rosalind Franklin, Watson, Crick, Jenner, Robert Koch|Koch, Lineu, Humboldt, Lamarck, Max Planck|Planck, Fermi, Dirac, Pauli, Hooke, Boyle, Leibniz, Descartes, Euler, Gauss, Fibonacci',
+      lendario: 'Hipátia, Eratóstenes, Ptolomeu, Al-Khwarizmi, Avicena, Alhazen|Ibn al-Haytham, Vesalius, Harvey, Leeuwenhoek, Huygens, Cavendish, Priestley, Dalton, Avogadro, Gay-Lussac, Joule, Kelvin, Carnot, Clausius, Boltzmann, Hertz, Röntgen, Becquerel, Lise Meitner, Emmy Noether, Chandrasekhar, Vera Rubin, Jocelyn Bell, Cecilia Payne, Henrietta Leavitt, Barbara McClintock, Dorothy Hodgkin, Rachel Carson, Jane Goodall, Wegener, Hutton, Lyell, Cuvier, Mary Anning, Ramanujan, Gödel, Von Neumann, Shannon, Grace Hopper, Katherine Johnson, Bertha Lutz, Johanna Döbereiner, Mayana Zatz, Marcelo Gleiser, Nise da Silveira, Miguel Nicolelis, Artur Avila, Landell de Moura|Padre Landell, Bartolomeu de Gusmão, Emílio Goeldi, Fritz Müller, Peter Lund, Duília de Mello, Sônia Guimarães, Peter Higgs|Higgs, Penrose, Kip Thorne, Fritz Haber, Albert Sabin|Sabin, Jonas Salk|Salk, Semmelweis, Lister, John Snow',
+    } },
+  { q: 'Cite um dinossauro ou réptil pré-histórico',
+    strip: ['dinossauro'],
+    tiers: {
+      comum: 'Tiranossauro|T-Rex|Tiranossauro Rex|Rex, Velociraptor|Raptor, Triceratops|Tricerátopo',
+      incomum: 'Braquiossauro|Brachiosaurus, Estegossauro|Stegosaurus, Pterodáctilo|Pteranodonte, Diplodoco, Brontossauro, Espinossauro|Spinosaurus, Anquilossauro|Ankylosaurus, Parassaurolofo, Alossauro|Allosaurus',
+      raro: 'Iguanodonte, Paquicefalossauro, Carnotauro, Giganotossauro, Argentinossauro, Dilofossauro, Compsognato, Galimimo, Apatossauro, Megalossauro, Oviraptor, Troodonte, Deinonico, Estiracossauro, Edmontossauro, Maiassaura, Protoceratops, Plesiossauro, Mosassauro, Ictiossauro, Arqueoptérix, Indominus Rex|Indominus',
+      lendario: 'Estauricossauro|Staurikosaurus, Irritator, Oxalaia, Angaturama, Pycnonemosaurus, Saturnalia, Pampadromaeus, Buriolestes, Gnatovorax, Unaysaurus, Sacisaurus, Uberabatitan, Maxakalisaurus, Austroposeidon, Tapuiassauro, Amazonsaurus, Santanaraptor, Mirischia, Baurutitan, Gondwanatitan, Aeolosaurus, Adamantisaurus, Thanos simonattoi, Vespersaurus, Ubirajara, Terizinossauro|Therizinosaurus, Microraptor, Utahraptor, Barionix|Baryonyx, Suchomimus, Carcarodontossauro, Mapusaurus, Majungasaurus, Abelissauro, Ceratossauro, Kentrossauro, Amargassauro, Nigersaurus, Dreadnoughtus, Patagotitan, Mamenchisaurus, Euoplocephalus, Nodossauro, Psitacossauro, Lambeossauro, Coritossauro, Hadrossauro, Sinosauropteryx, Yutyrannus, Dracorex, Stygimoloch, Paquirrinossauro, Kosmoceratops, Herrerassauro, Eoraptor, Celófise|Coelophysis, Plateossauro, Quetzalcoatlus, Dimorphodon',
+    } },
+  { q: 'Cite uma flor',
+    strip: ['flor de', 'flor'],
+    tiers: {
+      comum: 'Rosa, Margarida, Girassol, Orquídea, Tulipa',
+      incomum: 'Lírio, Violeta, Cravo, Jasmim, Hortênsia, Lavanda, Copo-de-leite, Crisântemo, Gérbera, Begônia, Azaleia, Dália, Camélia, Bromélia, Lótus|Flor de lótus',
+      raro: 'Ipê, Hibisco, Buganvília|Primavera, Petúnia, Amor-perfeito, Gardênia, Magnólia, Íris, Narciso, Lisianthus, Antúrio, Gladíolo|Palma-de-santa-rita, Peônia, Gerânio, Calêndula, Cerejeira|Flor de cerejeira|Sakura, Vitória-régia, Maria-sem-vergonha|Beijo, Boca-de-leão, Flor-de-lis, Dente-de-leão, Rosa do deserto, Kalanchoe, Mosquitinho, Astromélia, Estrelítzia|Ave-do-paraíso, Helicônia, Manacá, Jacinto, Papoula, Lilás, Cravina, Onze-horas, Sempre-viva, Flor de maracujá, Trevo',
+      lendario: 'Edelvais|Edelweiss, Rafflésia, Flor-cadáver, Nepentes, Dama-da-noite, Rainha-da-noite, Flor-de-cera, Glicínia, Ixora, Plumeria|Jasmim-manga, Alamanda, Tumbérgia, Cattleya, Chuva-de-ouro, Clívia, Amarílis, Agapanto, Prímula, Ciclâmen, Miosótis, Ranúnculo, Anêmona, Áster, Cosmos, Zínia, Cravo-de-defunto|Tagetes, Verbena, Cambará|Lantana, Camomila, Estátice, Protea, Banksia, Acônito, Dedaleira, Heléboro, Gipsófila, Frésia, Gloxínia, Violeta-africana, Sapatinho-de-judia, Brinco-de-princesa|Fúcsia, Capuchinha, Pata-de-vaca, Mulungu, Flamboyant, Jacarandá, Quaresmeira, Paineira, Caliandra',
+    } },
+  { q: 'Cite um rio',
+    strip: ['rio'],
+    tiers: {
+      comum: 'Amazonas, São Francisco|Velho Chico, Nilo, Tietê',
+      incomum: 'Paraná, Mississippi|Mississipi, Tâmisa, Sena, Danúbio, Reno, Ganges, Yangtzé|Yang-Tsé|Iangtzé, Negro, Prata|Rio da Prata, Pinheiros, Paraíba do Sul, Xingu, Tocantins, Araguaia',
+      raro: 'Madeira, Tapajós, Solimões, Iguaçu, Uruguai, Paraguai, Capibaribe, Parnaíba, Jequitinhonha, Doce, Guaíba, Jacuí, Grande, Paranapanema, Purus, Juruá, Trombetas, Volga, Tigre, Eufrates, Jordão, Colorado, Hudson, Tejo, Douro, Ebro, Pó, Tibre, Elba, Ródano|Rhône, Mekong, Indo, Orinoco, Congo, Níger, Zambeze, Missouri, São Lourenço, Yukon',
+      lendario: 'Oiapoque, Chuí, Japurá, Javari, Içá, Branco, Jari, Gurupi, Pindaré, Itapecuru, Mearim, Jaguaribe, Piranhas|Piranhas-Açu, Potengi, Vaza-Barris, Contas, Pardo, Mucuri, Piracicaba, Mogi-Guaçu, Sapucaí, Ribeira de Iguape|Ribeira, Itajaí-Açu|Itajaí, Taquari, Ibicuí, Cuiabá, Miranda, Aquidauana, Teles Pires, Juruena, Guaporé, Mamoré, Beni, Ucayali, Marañón, Putumayo, Magdalena, Lena, Ob, Ienissei|Yenisei, Amur, Irrawaddy, Brahmaputra, Huang He|Rio Amarelo, Orange|Oranje, Limpopo, Okavango, Senegal, Volta, Shannon, Liffey, Vístula, Oder, Dnieper|Dniepre, Don, Neva, Murray, Darling, Fraser, Mackenzie, Rio Bravo, Columbia, Ohio, Arkansas, Tennessee, Potomac',
+    } },
+  { q: 'Cite um astronauta, cosmonauta ou animal que foi ao espaço',
+    strip: ['astronauta', 'cosmonauta'],
+    tiers: {
+      comum: 'Neil Armstrong|Armstrong, Yuri Gagarin|Gagarin|Iuri Gagarin, Marcos Pontes|Marcos César Pontes|Pontes',
+      incomum: 'Buzz Aldrin|Aldrin, Valentina Tereshkova|Tereshkova, Michael Collins|Collins, John Glenn, Laika, Sally Ride, Alan Shepard',
+      raro: 'Chris Hadfield|Hadfield, Scott Kelly, Peggy Whitson, Christa McAuliffe, Jim Lovell|James Lovell, Gene Cernan|Eugene Cernan, Alexei Leonov|Leonov, Yang Liwei, Mae Jemison, Thomas Pesquet, Samantha Cristoforetti, Sunita Williams|Suni Williams, Gus Grissom, Ed White, Roger Chaffee, Pete Conrad, Alan Bean, Jack Swigert, Fred Haise, John Young, Charlie Duke, Harrison Schmitt, Frank Borman, Bill Anders|William Anders, Jeff Bezos, Wally Funk, William Shatner',
+      lendario: 'Gherman Titov|Titov, Vladimir Komarov|Komarov, Sergei Krikalev|Krikalev, Valeri Polyakov|Polyakov, Svetlana Savitskaya, Helen Sharman, Ulf Merbold, Jean-Loup Chrétien, Rakesh Sharma, Arnaldo Tamayo, Ilan Ramon, Kalpana Chawla, Guion Bluford, Bruce McCandless, Story Musgrave, Edgar Mitchell, Stuart Roosa, David Scott, James Irwin, Al Worden, Rusty Schweickart, Wally Schirra, Gordon Cooper, Scott Carpenter, Deke Slayton, Mark Kelly, Koichi Wakata, Chiaki Mukai, Alexander Gerst, Tim Peake, André Kuipers, Luca Parmitano, Christina Koch, Jessica Meir, Victor Glover, Jeremy Hansen, Reid Wiseman, Wang Yaping, Liu Yang, Zhai Zhigang, Anousheh Ansari, Dennis Tito, Guy Laliberté, Yusaku Maezawa, Jared Isaacman, Belka, Strelka, Ham, Félicette',
+    } },
 ];
 
 /* ---------------- Julgamento das respostas ---------------- */
 function norm(s) {
-  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  return s.toLowerCase().replace(/\+/g, ' plus ').replace(/#/g, ' sharp ').normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 const ARTICLES = /^(o|a|os|as|um|uma|el|la|the|de|do|da)\s+/;
@@ -954,6 +1197,7 @@ function showPrompt() {
   $('#prompt-text').textContent = q.q;
   $('#hud-prompt').textContent = `PROMPT ${S.i + 1} DE ${ROUND_SIZE}`;
   input.value = '';
+  hideAnswerMsg();
   restartAnim($('#prompt-view'), 'rise');
   updatePips();
   startTimer();
@@ -984,13 +1228,15 @@ function submit(timeout) {
   if (S.phase !== 'prompt') return;
   const raw = input.value.trim().replace(/\s+/g, ' ');
   if (!raw && !timeout) { restartAnim($('#answer-form'), 'shake'); input.focus(); return; }
-  stopTimer(); S.phase = 'reveal'; S.revealAt = performance.now();
-  input.blur(); SFX.submit();
-
   const q = S.questions[S.i];
   const tier = raw ? judge(raw, q) : 'vazio';
+  if (tier === 'vazio' && !timeout) { rejectAnswer(raw); return; }
+
+  stopTimer(); S.phase = 'reveal'; S.revealAt = performance.now();
+  input.blur(); hideAnswerMsg(); SFX.submit();
   const T = TIERS[tier];
-  S.results.push({ q: q.q, answer: raw, tier });
+  const answer = tier === 'vazio' ? '' : raw;
+  S.results.push({ q: q.q, answer, tier });
   S.score += T.pts; S.dist += T.dist;
 
   // HUD
@@ -1003,9 +1249,9 @@ function submit(timeout) {
   restartAnim(resultIcon.canvas, 'pop'); restartAnim($('#result-view'), 'rise');
   const tierEl = $('#result-tier');
   tierEl.textContent = T.name; tierEl.style.color = T.color; tierEl.style.textShadow = `0 0 14px ${T.color}99`;
-  $('#result-answer').textContent = raw ? `“${raw.charAt(0).toUpperCase() + raw.slice(1)}”` : '“...”';
+  $('#result-answer').textContent = answer ? `“${answer.charAt(0).toUpperCase() + answer.slice(1)}”` : '“...”';
   $('#result-pts').innerHTML = `<b style="color:${T.color}">+${T.pts} PTS</b> · <span style="white-space:nowrap">avança ${fmt(T.dist)} AL</span>`;
-  $('#result-flavor').textContent = !raw ? 'Tempo esgotado. Nenhum sinal enviado.' : T.flavor[Math.floor(Math.random() * T.flavor.length)];
+  $('#result-flavor').textContent = tier === 'vazio' ? 'Tempo esgotado. Nenhuma resposta válida enviada.' : T.flavor[Math.floor(Math.random() * T.flavor.length)];
   setTimeout(() => SFX.tier(tier), 120);
   if (tier !== 'vazio') spawnDrift(tier);
 
@@ -1015,6 +1261,16 @@ function submit(timeout) {
   nb.textContent = lastQ ? 'CONCLUIR VIAGEM ▲' : 'PRÓXIMO SALTO ▲';
   if (lastQ) $('#hud-prompt').textContent = 'VIAGEM CONCLUÍDA';
 }
+
+function rejectAnswer(raw) {
+  const msg = $('#answer-msg');
+  msg.textContent = `“${raw}” não é uma resposta válida. Tente outra!`;
+  msg.hidden = false;
+  restartAnim(msg, 'shake');
+  input.select();
+  SFX.tier('vazio');
+}
+function hideAnswerMsg() { $('#answer-msg').hidden = true; }
 
 function next() {
   if (S.phase !== 'reveal' || performance.now() - S.revealAt < 350) return;
