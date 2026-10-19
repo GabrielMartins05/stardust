@@ -17,7 +17,7 @@ Abra `index.html` direto no navegador: é um arquivo único (HTML + CSS + JS pur
 Resposta inválida não pontua nem encerra a transmissão: o jogo avisa e você tenta outra
 enquanto houver tempo. Só vira **Sem Sinal** quando o tempo acaba sem resposta válida.
 
-- 7 transmissões por viagem, 20 s cada, sorteadas de um banco de 81 perguntas
+- 7 transmissões por viagem, 20 s cada, sorteadas de um banco de 131 perguntas
   (a viagem diária usa a mesma semente para todos no mesmo dia; "Nova viagem" sorteia outra).
 - Respostas são julgadas pelo dicionário `QUESTIONS` no script — ignora acentos,
   maiúsculas, artigos, prefixos ("constelação de…") e pequenos erros de digitação.
