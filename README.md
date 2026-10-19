@@ -17,10 +17,12 @@ Abra `index.html` direto no navegador: é um arquivo único (HTML + CSS + JS pur
 Resposta inválida não pontua nem encerra a transmissão: o jogo avisa e você tenta outra
 enquanto houver tempo. Só vira **Sem Sinal** quando o tempo acaba sem resposta válida.
 
-- 7 transmissões por viagem, 20 s cada, sorteadas de um banco de 131 perguntas.
+- 7 transmissões por viagem, 20 s cada, sorteadas de um banco de 231 perguntas.
   Cada viagem evita as perguntas que já apareceram naquele navegador, até o banco
   inteiro ter sido visto; aí o ciclo recomeça.
-- Respostas são julgadas pelo dicionário `QUESTIONS` no script — ignora acentos,
-  maiúsculas, artigos, prefixos ("constelação de…") e pequenos erros de digitação.
+- Respostas são julgadas pelo dicionário `QUESTIONS` no script, de forma tolerante:
+  ignora acentos, maiúsculas, apóstrofos, artigos e preposições ("Hora da Aventura" =
+  "Hora de Aventura"), espaços, "&"/"e", números romanos, erros de digitação e palavras
+  a mais ou a menos ("pizza de calabresa" → "calabresa").
 - Para adicionar perguntas, inclua um objeto em `QUESTIONS` com as listas de cada nível
   (itens separados por vírgula, sinônimos por `|`).
