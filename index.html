@@ -343,7 +343,6 @@ const fmt = n => Math.round(n).toLocaleString('pt-BR');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ROUND_SIZE = 7;
 const TIME_LIMIT = 20;               // segundos por transmissão
-const LAUNCH_DAY = new Date(2026, 0, 1);
 
 /* ---------------- Níveis de raridade ---------------- */
 const TIERS = {
@@ -1012,11 +1011,411 @@ const QUESTIONS = [
       raro: 'Monte Rushmore, Angkor Wat, Alhambra, Kremlin, Catedral de São Basílio|São Basílio, Notre-Dame, Louvre, Torre de Londres, Tower Bridge, Palácio de Buckingham, Neuschwanstein, Portão de Brandemburgo, Basílica de São Pedro, Fontana di Trevi, Panteão, Duomo de Milão|Duomo, Moais|Moai, Templo do Céu, Cidade Proibida, Shwedagon|Pagode Dourado, Borobudur, Santa Sofia|Hagia Sophia, Mesquita Azul, Torre de Belém, Mosteiro dos Jerónimos, Torres Petronas|Petronas, CN Tower|Torre CN, Gateway Arch, Space Needle, Atomium, Escadaria Selarón, Arcos da Lapa, Theatro Municipal, Ponte Estaiada, Palácio da Alvorada, Pelourinho, Ver-o-Peso|Mercado Ver-o-Peso, Ponte JK, Catedral da Sé, Edifício Copan|Copan, Museu do Amanhã, Farol da Barra',
       lendario: 'Göbekli Tepe, Mohenjo-Daro, Persépolis, Palmira, Baalbek, Leptis Magna, Timgad, Grande Zimbábue, Lalibela, Abu Simbel, Karnak, Luxor, Vale dos Reis, Mesquita de Djenné|Djenné, Teotihuacán, Tikal, Palenque, Tulum, Uxmal, Linhas de Nazca|Nazca, Tiwanaku, Sacsayhuamán, Ollantaytambo, Kuelap, Caral, Ciudad Perdida|Cidade Perdida, Mesa Verde, Cahokia, Skara Brae, Newgrange, Carnac, Mont-Saint-Michel, Meteora, Delfos, Éfeso, Capadócia, Ani, Derinkuyu, Sigiriya, Bagan, My Son, Prambanan, Ellora, Ajanta, Hampi, Konark, Palácio de Potala|Potala, Exército de Terracota|Guerreiros de Terracota, Castelo de Himeji|Himeji, Fushimi Inari, Pavilhão Dourado|Kinkaku-ji, Itsukushima, Byodo-in, Bayon, Ta Prohm, Wat Arun, Mausoléu de Halicarnasso, Colosso de Rodes, Farol de Alexandria, Jardins Suspensos da Babilônia, Templo de Ártemis, Estátua de Zeus, Zigurate de Ur, Porta de Ishtar, São Miguel das Missões, Forte dos Reis Magos, Forte de Copacabana, Real Gabinete Português de Leitura|Real Gabinete, Profetas do Aleijadinho|Bom Jesus de Matosinhos, Igrejinha da Pampulha|Pampulha, Paço Imperial, Cais do Valongo, Catedral de Petrópolis, Palácio Quitandinha|Quitandinha, Teatro da Paz, Theatro José de Alencar, Ponte Hercílio Luz, Itaipu|Usina de Itaipu, Edifício Martinelli|Martinelli, Museu do Ipiranga, Monumento às Bandeiras',
     } },
+  { q: 'Cite um chefe (boss) de Dark Souls 1',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Ornstein e Smough|Ornstein and Smough|Ornstein|Smough, Artorias|Knight Artorias|Cavaleiro Artorias, Gwyn|Lord Gwyn|Gwyn Lord of Cinder, Taurus Demon|Demônio Touro, Asylum Demon|Demônio do Asilo',
+      incomum: 'Capra Demon|Demônio Capra, Bell Gargoyles|Gárgulas do Sino|Gárgulas, Sif|Great Grey Wolf Sif|Grande Lobo Cinzento Sif, Quelaag|Chaos Witch Quelaag, Manus|Manus Father of the Abyss, Kalameet|Black Dragon Kalameet, Four Kings|Quatro Reis, Nito|Gravelord Nito, Seath|Seath the Scaleless, Gwyndolin|Dark Sun Gwyndolin, Bed of Chaos|Leito do Caos',
+      raro: 'Moonlight Butterfly|Borboleta do Luar, Stray Demon|Demônio Errante, Iron Golem|Golem de Ferro, Gaping Dragon|Dragão Escancarado, Priscilla|Crossbreed Priscilla, Pinwheel, Sanctuary Guardian|Guardião do Santuário, Ceaseless Discharge|Descarga Incessante, Centipede Demon|Demônio Centopeia, Demon Firesage|Firesage Demon',
+      lendario: 'Hydra, Black Knight|Cavaleiro Negro, Titanite Demon|Demônio de Titanita, Kirk|Knight Kirk, Paladin Leeroy|Leeroy, Hellkite Drake|Drake da Ponte, Darkwraith, Silver Knight|Cavaleiro de Prata, Xanthous King Jeremiah|Jeremiah, Maneater Mildred|Mildred, Lautrec, Havel|Havel the Rock, Chained Prisoner, Bounding Demon',
+    } },
+  { q: 'Cite um chefe (boss) de Dark Souls 2',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Pursuer|The Pursuer|Perseguidor, Last Giant|Último Gigante, Smelter Demon|Demônio Fundidor, Fume Knight|Cavaleiro da Fumaça, Nashandra',
+      incomum: 'Dragonrider, Old Dragonslayer, Flexile Sentry, Ruin Sentinels, Belfry Gargoyles, Lost Sinner|Pecadora Perdida, Mytha|Mytha the Baneful Queen, Looking Glass Knight, Sir Alonne|Alonne, Aldia|Aldia Scholar of the First Sin, Darklurker, Throne Watcher and Defender|Throne Watcher|Throne Defender, Vendrick|King Vendrick|Rei Vendrick',
+      raro: 'Skeleton Lords, The Rotten|Rotten, Old Iron King, Velstadt|Velstadt the Royal Aegis, Ancient Dragon|Dragão Ancião, Giant Lord, Burnt Ivory King|Ivory King, Executioner\'s Chariot, Covetous Demon',
+      lendario: 'Prowling Magus and Congregation|Prowling Magus, Royal Rat Vanguard, Royal Rat Authority, Scorpioness Najka|Najka, Duke\'s Dear Freja|Freja, Demon of Song, Guardian Dragon, Twin Dragonriders, Elana|Elana the Squalid Queen, Sinh|Sinh the Slumbering Dragon, Aava|Aava the King\'s Pet, Lud and Zallen|Lud|Zallen, Blue Smelter Demon, Graverobber Varg|Afflicted Graverobber',
+    } },
+  { q: 'Cite um chefe (boss) de Dark Souls 3',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Nameless King|Rei Sem Nome, Pontiff Sulyvahn|Sulyvahn, Iudex Gundyr, Abyss Watchers|Vigilantes do Abismo, Dancer|Dancer of the Boreal Valley|Dançarina, Soul of Cinder|Alma das Cinzas, Slave Knight Gael|Gael',
+      incomum: 'Vordt|Vordt of the Boreal Valley, Crystal Sage|Sábio de Cristal, Aldrich|Aldrich Devourer of Gods, Yhorm|Yhorm the Giant, Twin Princes|Lorian e Lothric|Lothric|Lorian, Dragonslayer Armour|Dragonslayer Armor, Champion Gundyr, Sister Friede|Friede, Darkeater Midir|Midir',
+      raro: 'Curse-Rotted Greatwood, Deacons of the Deep, High Lord Wolnir|Wolnir, Old Demon King, Ancient Wyvern, Oceiros|Oceiros the Consumed King, Father Ariandel|Ariandel, Demon Prince',
+      lendario: 'Champion\'s Gravetender|Gravetender|Gravetender Greatwolf, Halflight|Halflight Spear of the Church, Demon in Pain|Demon from Below, Ravenous Crystal Lizard, Stray Demon',
+    } },
+  { q: 'Cite um chefe (boss) de Elden Ring',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Malenia|Malenia Blade of Miquella, Margit|Margit the Fell Omen, Radahn|Starscourge Radahn|General Radahn, Godrick|Godrick the Grafted|Godrick o Enxertado, Elden Beast|Fera Prístina, Messmer|Messmer the Impaler, Radagon|Radagon of the Golden Order',
+      incomum: 'Rennala|Rennala Queen of the Full Moon, Rykard|Rykard Lord of Blasphemy, Morgott|Morgott the Omen King, Mohg|Mohg Lord of Blood, Maliketh|Maliketh the Black Blade, Godfrey|Hoarah Loux, Fire Giant|Gigante de Fogo, Tree Sentinel|Sentinela da Árvore, Placidusax|Dragonlord Placidusax, Rellana|Rellana Twin Moon Knight, Bayle|Bayle the Dread, Promised Consort Radahn|Consort Radahn, Mimic Tear|Lágrima Mimética',
+      raro: 'Godskin Duo, Godskin Apostle, Godskin Noble, Astel|Astel Naturalborn of the Void, Commander Niall|Niall, Lichdragon Fortissax|Fortissax, Draconic Tree Sentinel, Crucible Knight, Black Knife Assassin, Leonine Misbegotten, Red Wolf of Radagon, Ancestor Spirit, Regal Ancestor Spirit, Dragonkin Soldier, Valiant Gargoyles, Royal Knight Loretta|Loretta, Ulcerated Tree Spirit, Erdtree Avatar, Magma Wyrm Makar|Makar, Glintstone Dragon Smarag|Smarag, Flying Dragon Agheel|Agheel, Elemer of the Briar|Elemer, Mohg the Omen, Sir Gideon Ofnir|Gideon, Godefroy the Grafted|Godefroy, Fia\'s Champions, Romina|Romina Saint of the Bud, Midra|Midra Lord of Frenzied Flame, Scadutree Avatar, Putrescent Knight, Divine Beast Dancing Lion|Dancing Lion, Metyr|Metyr Mother of Fingers, Commander Gaius|Gaius',
+      lendario: 'Mad Pumpkin Head, Bell Bearing Hunter, Night\'s Cavalry, Grafted Scion, Soldier of Godrick, Beastman of Farum Azula, Demi-Human Queen, Erdtree Burial Watchdog, Cemetery Shade, Ancient Hero of Zamor, Death Rite Bird, Deathbird, Tibia Mariner, Omenkiller, Kindred of Rot, Fallingstar Beast, Alecto|Alecto Black Knife Ringleader, Onyx Lord, Alabaster Lord, Adan|Adan Thief of Fire, Bols|Bols Carian Knight, Esgar|Esgar Priest of Blood, Patches, Crystalian, Stonedigger Troll, Abductor Virgins, Necromancer Garris, Battlemage Hugues, Wormface, Black Blade Kindred, Sanguine Noble, Royal Revenant, Spiritcaller Snail, Rugalea the Great Red Bear|Rugalea, Jori|Jori Elder Inquisitor, Ralva|Ralva the Great Red Bear, Ghostflame Dragon, Death Knight, Rakshasa, Dryleaf Dane, Golden Hippopotamus, Count Ymir|Ymir, Demi-Human Swordmaster Onze|Onze, Needle Knight Leda|Leda, Greyoll|Dragonlord Greyoll',
+    } },
+  { q: 'Cite um chefe (boss) de Bloodborne',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Ludwig|Ludwig the Accursed|Ludwig the Holy Blade, Lady Maria|Maria|Lady Maria of the Astral Clocktower, Orphan of Kos|Órfão de Kos, Gehrman|Gehrman the First Hunter, Father Gascoigne|Gascoigne|Padre Gascoigne',
+      incomum: 'Cleric Beast, Vicar Amelia|Amelia, Blood-Starved Beast, Darkbeast Paarl|Paarl, Rom|Rom the Vacuous Spider, Micolash|Micolash Host of the Nightmare, Ebrietas|Ebrietas Daughter of the Cosmos, Moon Presence|Presença da Lua, Shadow of Yharnam|Shadows of Yharnam, Martyr Logarius|Logarius, Witch of Hemwick, One Reborn|The One Reborn, Mergo\'s Wet Nurse, Laurence|Laurence the First Vicar',
+      raro: 'Celestial Emissary, Amygdala, Living Failures, Bloodletting Beast, Yharnam|Yharnam Pthumerian Queen',
+      lendario: 'Watchdog of the Old Lords, Keeper of the Old Lords, Pthumerian Descendant, Pthumerian Elder, Abhorrent Beast, Undead Giant, Forgotten Madman, Merciless Watchers, Headless Bloodletting Beast, Beast-possessed Soul, Loran Silverbeast, Loran Darkbeast, Brain of Mensis, Brador|Brador Church Assassin, Bloody Crow of Cainhurst, Eileen|Eileen the Crow, Djura, Alfred, Henryk, Valtr|Valtr Master of the League, Henriett|Old Hunter Henriett',
+    } },
+  { q: 'Cite um chefe (boss) de Sekiro',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Genichiro|Genichiro Ashina, Isshin|Isshin the Sword Saint|Isshin Ashina|Isshin Santo da Espada, Guardian Ape|Macaco Guardião, Lady Butterfly|Dama Borboleta, Owl|Great Shinobi Owl|Coruja',
+      incomum: 'Gyoubu|Gyoubu Oniwa|Gyoubu Masataka Oniwa, Corrupted Monk|Monge Corrompido, Divine Dragon|Dragão Divino, Demon of Hatred|Demônio do Ódio, Headless Ape|Macaco Sem Cabeça, Emma|Emma the Gentle Blade, Folding Screen Monkeys, Great Serpent|Grande Serpente, Owl Father|Coruja Pai, Chained Ogre|Ogro Acorrentado',
+      raro: 'Seven Ashina Spears, Armored Warrior, Snake Eyes Shirafuji|Shirafuji, Snake Eyes Shirahagi|Shirahagi, Juzou the Drunkard|Juzou, Long-arm Centipede, Sakura Bull, Blazing Bull, Shichimen Warrior, Headless, Lone Shadow, True Corrupted Monk, O\'Rin of the Water|O\'Rin, Tenzen|General Tenzen Yamauchi, Ashina Elite, Tokujiro the Glutton|Tokujiro, Mist Noble, Okami Leader Shizu|Shizu',
+      lendario: 'Naomori Kawarada|General Naomori Kawarada, Shinobi Hunter Enshin|Enshin, Long-arm Centipede Giraffe|Giraffe, Long-arm Centipede Sen\'un|Sen\'un, Lone Shadow Masanaga|Masanaga, Lone Shadow Vilehand|Vilehand, Lone Shadow Longswordsman, Ujinari Mizou, Jinsuke Saze, Kuranosuke Matsumoto|Matsumoto, Shigekichi of the Red Guard|Shigekichi, Masaji Oniwa, Hanbei|Hanbei the Undying',
+    } },
+  { q: 'Cite um chefe (boss) de Demon\'s Souls',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Flamelurker, False King Allant|King Allant|Allant, Maneater, Tower Knight, Old One',
+      incomum: 'Phalanx, Penetrator, Armor Spider, Fool\'s Idol, Dragon God, Maiden Astraea|Astraea, Storm King, Adjudicator',
+      raro: 'Leechmonger, Old Monk, Garl Vinland|Garl, Vanguard, Old Hero, Dirty Colossus',
+      lendario: 'Old King Doran|Doran, Miralda|Executioner Miralda, Scirvir|Scirvir the Wanderer, Mephistopheles, Satsuki, Yurt|Yurt the Silent Chief, Biorr|Biorr of the Twin Fangs, Ostrava, Selen Vinland|Selen, Patches|Patches the Hyena',
+    } },
+  { q: 'Cite um chefe (boss) de Hollow Knight',
+    strip: ['boss', 'chefe'],
+    tiers: {
+      comum: 'Hornet, The Radiance|Radiance|Radiância, Hollow Knight|The Hollow Knight|Cavaleiro Oco, False Knight|Falso Cavaleiro, Mantis Lords',
+      incomum: 'Soul Master, Nightmare King Grimm|Grimm|Troupe Master Grimm, Pure Vessel, Absolute Radiance, Dung Defender, Broken Vessel, Watcher Knights, Traitor Lord, Sisters of Battle, Gruz Mother, Hive Knight',
+      raro: 'Lost Kin, Uumuu, Crystal Guardian, Enraged Guardian, Nosk, Flukemarm, The Collector|Collector, Brooding Mawlek, Vengefly King, Soul Tyrant, Failed Champion, White Defender',
+      lendario: 'Markoth, Marmu, Gorb, Xero, Elder Hu, No Eyes, Galien, God Tamer, Oblobbles, Oro, Mato, Paintmaster Sheo|Sheo, Great Nailsage Sly|Sly, Winged Nosk, Grey Prince Zote|Zote, Massive Moss Charger, Elder Baldur',
+    } },
+  { q: 'Cite um jogo soulslike (de qualquer estúdio)',
+    strip: ['jogo'],
+    tiers: {
+      comum: 'Dark Souls, Elden Ring, Bloodborne, Sekiro|Sekiro Shadows Die Twice, Hollow Knight, Demon\'s Souls',
+      incomum: 'Lies of P, Nioh, Nioh 2, Lords of the Fallen, Black Myth Wukong|Black Myth|Wukong, Star Wars Jedi Fallen Order|Jedi Fallen Order, Remnant|Remnant From the Ashes, Remnant 2, Mortal Shell, Salt and Sanctuary, Blasphemous, The Surge, Code Vein, Dark Souls 2, Dark Souls 3, Wo Long|Wo Long Fallen Dynasty, Stellar Blade, Hollow Knight Silksong|Silksong',
+      raro: 'Ashen, Thymesia, Steelrising, Hellpoint, Dead Cells, Death\'s Door, Tunic, Elden Ring Nightreign|Nightreign, Star Wars Jedi Survivor|Jedi Survivor, Blasphemous 2, The Surge 2, Code Vein 2, Bleak Faith|Bleak Faith Forsaken, Enotria|Enotria The Last Song, Ender Lilies|Ender Lilies Quietus of the Knights, Ender Magnolia, Moonscars, Grime, Death\'s Gambit, Salt and Sacrifice, Darksiders 3, The First Berserker|Khazan|The First Berserker Khazan, Rise of the Ronin, Flintlock|Flintlock The Siege of Dawn, Mandragora',
+      lendario: 'King\'s Field, Shadow Tower, Another Crab\'s Treasure, Sinner|Sinner Sacrifice for Redemption, Dolmen, Lost Soul Aside, AI Limit, Wuchang|Wuchang Fallen Feathers, Phantom Blade Zero, Bleak Sword, Nine Sols, Afterimage, Unsouled, Elderand, Vigil|Vigil The Longest Night, Hunt the Night, Morbid|Morbid The Seven Acolytes, Souldiers, Asterigos, The Last Faith, Tails of Iron, Lunacid, Eldest Souls, Dark Devotion, Necropolis, Immortal Unchained, Blade of Darkness|Severance, Pseudoregalia',
+    } },
+  { q: 'Cite um jogo da FromSoftware',
+    strip: ['jogo'],
+    tiers: {
+      comum: 'Dark Souls, Elden Ring, Bloodborne, Sekiro|Sekiro Shadows Die Twice',
+      incomum: 'Demon\'s Souls, Dark Souls 2|Dark Souls II, Dark Souls 3|Dark Souls III, Armored Core, Armored Core 6|Armored Core VI|Fires of Rubicon, Elden Ring Nightreign|Nightreign, Shadow of the Erdtree',
+      raro: 'King\'s Field, Déraciné, Tenchu, Echo Night, Otogi|Otogi Myth of Demons, Shadow Tower, Ninja Blade, Chromehounds, Metal Wolf Chaos, Steel Battalion|Steel Battalion Heavy Armor, Armored Core 4, Armored Core For Answer, Armored Core 5, Armored Core Verdict Day, Enchanted Arms, The Duskbloods|Duskbloods',
+      lendario: 'Eternal Ring, Evergrace, Forever Kingdom, Lost Kingdoms|Rune, Lost Kingdoms 2|Rune 2, Kuon, Murakumo, Frame Gride, Spriggan|Spriggan Lunar Verse, Sword of Moonlight, Shadow Tower Abyss, Otogi 2, Echo Night 2, Echo Night Beyond, Tenchu Wrath of Heaven, Another Century\'s Episode, King\'s Field 4|King\'s Field The Ancient City, 3D Dot Game Heroes',
+    } },
+  { q: 'Cite uma arma de Elden Ring',
+    strip: ['arma'],
+    tiers: {
+      comum: 'Rivers of Blood|Rios de Sangue, Moonveil, Uchigatana, Claymore, Hand of Malenia|Mão de Malenia, Sword of Night and Flame|SoNaF, Greatsword|Espadão',
+      incomum: 'Blasphemous Blade|Lâmina Blasfema, Dark Moon Greatsword, Starscourge Greatsword, Bloodhound\'s Fang, Nagakiba, Zweihander, Giant-Crusher, Mohgwyn\'s Sacred Spear, Ruins Greatsword, Godslayer\'s Greatsword, Grafted Blade Greatsword, Reduvia, Wing of Astel, Eclipse Shotel, Meteoric Ore Blade, Golden Halberd, Guardian\'s Swordspear, Bolt of Gransax, Marais Executioner\'s Sword, Black Knife, Dagger|Adaga, Longsword, Broadsword, Club, Battle Axe, Rapier, Estoc, Lordsworn\'s Greatsword, Morning Star, Great Stars',
+      raro: 'Sacred Relic Sword, Maliketh\'s Black Blade, Morgott\'s Cursed Sword, Grafted Dragon, Axe of Godrick, Dragon King\'s Cragblade, Bloodhound Claws, Winged Scythe, Halo Scythe, Envoy\'s Greathorn, Gargoyle\'s Greatsword, Gargoyle\'s Blackblade, Dragon Greatclaw, Prelate\'s Inferno Crozier, Banished Knight\'s Greatsword, Coded Sword, Golden Order Greatsword, Frozen Needle, Antspur Rapier, Rogier\'s Rapier, Cleanrot Knight\'s Sword, Sword of Milos, Nox Flowing Sword, Crystal Sword, Carian Knight\'s Sword, Serpent-God\'s Curved Sword, Magma Blade, Wakizashi, Spear of the Impaler, Greatsword of Radahn, Milady, Leda\'s Sword, Euporia, Bloodfiend\'s Arm, Backhand Blade, Great Katana, Death Knight\'s Twin Axes, Anvil Hammer, Smithscript Dagger, Pata, Beast Claw, Obsidian Lamina',
+      lendario: 'Fire Knight\'s Greatsword, Moonrithyll\'s Knight Sword, Shadow Sunflower Blossom, Claws of Night, Ansbach\'s Longbow, Dragon-Hunter\'s Great Katana, Freyja\'s Greatsword, Velvet Sword of St. Trina, Sword of St. Trina, Ripple Blade, Ripple Crescent Halberd, Treespear, Siluria\'s Tree, Vyke\'s War Spear, Lance, Clayman\'s Harpoon, Celebrant\'s Sickle, Fingerprint Stone Shield, Brick Hammer, Great Club, Giant\'s Red Braid, Hammer, Mace, Star-Lined Sword, Rakshasa\'s Great Katana, Dueling Shield, Messmer Soldier\'s Spear, Rotten Crystal Sword, Cipher Pata, Flowerstone Gavel, Erdsteel Dagger, Scavenger\'s Curved Sword, Mantis Blade, Scythe, Fallingstar Beast Jaw, Rusted Anchor, Troll\'s Golden Sword, Loretta\'s War Sickle, Commander\'s Standard, Ordovis\'s Greatsword, Venomous Fang',
+    } },
+  { q: 'Cite uma arma da trilogia Dark Souls',
+    strip: ['arma'],
+    tiers: {
+      comum: 'Zweihander, Claymore, Moonlight Greatsword|Espadão do Luar, Black Knight Sword|Espada do Cavaleiro Negro, Uchigatana, Drake Sword|Espada de Drake, Greatsword of Artorias|Artorias Greatsword',
+      incomum: 'Dragonslayer Spear, Smough\'s Hammer, Grant, Dragon Tooth, Balder Side Sword, Estoc, Rapier, Iaito, Washing Pole, Chaos Blade, Quelaag\'s Furysword, Abyss Greatsword, Great Scythe, Longsword, Broadsword, Storm Ruler, Profaned Greatsword, Farron Greatsword, Lothric Knight Sword, Dark Sword, Dagger|Adaga, Club|Clava, Halberd, Black Knight Halberd, Black Knight Greataxe, Black Knight Greatsword, Havel\'s Greatshield|Grande Escudo de Havel',
+      raro: 'Murakumo, Server, Lifehunt Scythe, Fume Ultra Greatsword, Darkdrift, Astora Greatsword, Sellsword Twinblades, Friede\'s Great Scythe, Gael\'s Greatsword, Onikiri and Ubadachi, Ringed Knight Paired Greatswords, Exile Greatsword, Carthus Curved Sword, Dragonslayer Swordspear, Lothric Holy Sword, Twin Princes\' Greatsword, Wolnir\'s Holy Sword, Sunlight Straight Sword, Avelyn, Demon\'s Great Machete, Great Club, Large Club, Bandit\'s Knife, Priscilla\'s Dagger, Velka\'s Rapier, Ricard\'s Rapier, Butcher Knife, Demon\'s Greataxe, Dragon King Greataxe, Stone Greatsword, Obsidian Greatsword, Gravelord Sword, Silver Knight Spear',
+      lendario: 'Mail Breaker, Parrying Dagger, Caestus, Dark Silver Tracer, Great Axe, Golem Axe, Gargoyle Tail Axe, Channeler\'s Trident, Pike, Lucerne, Whip, Notched Whip, Guardian Tail, Dragon Bone Fist, Bloodlust, Mirrah Greatsword, Drakewing Ultra Greatsword, Ruler\'s Sword, Defender Greatsword, Blacksteel Katana, Chaos Rapier, Spider\'s Silk, Santier\'s Spear, Heide Spear, Pursuer\'s Ultra Greatsword, Smelter Sword, Old King\'s Great Hammer, Ice Rapier, Mastodon Greatsword, Loyce Greatsword, Majestic Greatsword, Crescent Axe, Titanite Catch Pole, Sun Sword, Dragonslayer Greatbow',
+    } },
+  { q: 'Cite uma arma de Bloodborne',
+    strip: ['arma'],
+    tiers: {
+      comum: 'Saw Cleaver|Cutelo Serrilhado, Ludwig\'s Holy Blade|Holy Blade, Hunter Pistol|Pistola de Caçador, Blunderbuss|Bacamarte, Chikage, Kirkhammer',
+      incomum: 'Burial Blade, Hunter Axe|Machado de Caçador, Threaded Cane, Saw Spear, Rakuyo, Blade of Mercy, Holy Moonlight Sword, Beast Claw, Simon\'s Bowblade, Logarius\' Wheel, Reiterpallasch, Cannon|Canhão, Evelyn, Gatling Gun',
+      raro: 'Boom Hammer, Beast Cutter, Bloodletter, Flamesprayer, Hunter\'s Torch|Torch, Stake Driver, Tonitrus, Church Pick, Whirligig Saw, Beasthunter Saif, Rifle Spear, Repeating Pistol, Piercing Rifle, Ludwig\'s Rifle, Church Cannon',
+      lendario: 'Kos Parasite, Amygdalan Arm, Fist of Gratia, Rosmarinus, Wooden Shield, Loch Shield',
+    } },
+  { q: 'Cite uma região ou área de Elden Ring',
+    strip: ['regiao', 'area'],
+    tiers: {
+      comum: 'Limgrave|Necrolimbo, Leyndell|Leyndell Royal Capital|Capital Real, Caelid, Liurnia|Liurnia of the Lakes, Stormveil|Stormveil Castle',
+      incomum: 'Altus Plateau, Mountaintops of the Giants, Haligtree|Miquella\'s Haligtree, Elphael, Farum Azula|Crumbling Farum Azula, Raya Lucaria|Academy of Raya Lucaria, Volcano Manor, Siofra River, Nokron, Ainsel River, Lake of Rot, Mohgwyn Palace, Weeping Peninsula, Roundtable Hold|Mesa Redonda, Land of Shadow|Terra das Sombras, Consecrated Snowfield, Mt. Gelmir|Mount Gelmir, Deeproot Depths',
+      raro: 'Shadow Keep, Belurat|Belurat Tower Settlement, Enir-Ilim, Scadu Altus, Gravesite Plain, Cerulean Coast, Jagged Peak, Abyssal Woods, Ancient Ruins of Rauh|Rauh, Castle Morne, Caria Manor, Redmane Castle, Sellia|Sellia Town of Sorcery, Dragonbarrow, Stormhill, Mistwood, Church of Elleh, Chapel of Anticipation, Forbidden Lands, Leyndell Ashen Capital|Ashen Capital, Elden Throne, Subterranean Shunning-Grounds, Nokstella, Ordina|Ordina Liturgical Town',
+      lendario: 'Stone Coffin Fissure, Castle Ensis, Midra\'s Manse, Shaman Village, Charo\'s Hidden Grave, Church of the Bud, Fort Haight, Gael Tunnel, Murkwater Cave, Fringefolk Hero\'s Grave, Academy Gate Town, Carian Study Hall, Divine Tower of Liurnia, Ruin-Strewn Precipice, Grand Lift of Dectus, Grand Lift of Rold, Flame Peak, Uhl Palace Ruins, Mohgwyn Dynasty Mausoleum, Hidden Path to the Haligtree, Bellum Highway, Fort Gael, Fort Faroth, Caelem Ruins, Smoldering Church, Third Church of Marika, Siofra Aqueduct, Moonlight Altar, Cathedral of Manus Metyr, Finger Ruins of Rhia',
+    } },
+  { q: 'Cite uma área de Dark Souls 1',
+    strip: ['area'],
+    tiers: {
+      comum: 'Firelink Shrine|Santuário do Elo de Fogo, Anor Londo, Blighttown, Undead Burg, Sen\'s Fortress',
+      incomum: 'Undead Parish, Darkroot Garden, Painted World of Ariamis|Painted World, Catacombs|Catacumbas, Tomb of the Giants, Duke\'s Archives, Lost Izalith, Kiln of the First Flame, Northern Undead Asylum|Undead Asylum, The Depths|Depths, Ash Lake, New Londo Ruins|New Londo',
+      raro: 'Valley of Drakes, Demon Ruins, Crystal Cave, Great Hollow, The Abyss',
+      lendario: 'Firelink Altar, Sanctuary Garden, Oolacile Sanctuary, Battle of Stoicism, Chasm of the Abyss, Oolacile Township, Royal Wood, Lower Undead Burg, Quelaag\'s Domain, Darkroot Basin',
+    } },
+  { q: 'Cite um NPC de Elden Ring',
+    strip: [],
+    tiers: {
+      comum: 'Melina, Ranni|Ranni the Witch|Renna, Blaidd, Patches, Varré|White Mask Varré, Alexander|Iron Fist Alexander, Sellen|Sorceress Sellen',
+      incomum: 'Fia, D|D Hunter of the Dead, Gideon|Sir Gideon Ofnir, Hewg|Smithing Master Hewg, Roderika, Nepheli|Nepheli Loux, Kenneth Haight|Kenneth, Rogier, Millicent, Gowry, Yura, Boc|Boc the Seamster, Iji, Corhyn|Brother Corhyn, Goldmask, Thops, Hyetta, Tanith, Dung Eater, Seluvis, Torrent|Torrente, Marika|Queen Marika|Rainha Marika, Kalé|Merchant Kalé, Bernahl, Jerren|Witch-Hunter Jerren',
+      raro: 'Rya, Diallos, Enia|Finger Reader Enia, Latenna, Irina, Edgar|Castellan Edgar, Shabriri, Ensha, Miriel|Pastor Miriel, Vyke, Ansbach|Sir Ansbach, Freyja|Redmane Freyja, Hornsent, Thiollier, Moore, Igon, Dryleaf Dane|Dane, Jolán|Swordhand of Night Jolán',
+      lendario: 'Gurranq|Gurranq Beast Clergyman, Twin Maiden Husks, Two Fingers, Three Fingers, Bloody Finger Nerijus|Nerijus, Eleonora, Black Knife Tiche|Tiche, Albus, Pidia, Alberich|Mad Tongue Alberich, Tragoth|Great Horned Tragoth, Anastasia|Anastasia Tarnished-Eater, Istvan|Old Knight Istvan, Juno Hoslow|Hoslow, Gostoc|Gatekeeper Gostoc, Miquella, St. Trina, Hornsent Grandam, Queelign, Rileigh, Kristoff, Wise One',
+    } },
+  { q: 'Cite um NPC da trilogia Dark Souls',
+    strip: [],
+    tiers: {
+      comum: 'Solaire|Solaire of Astora, Siegmeyer|Siegmeyer of Catarina|Onion Knight, Patches, Andre|Andre of Astora, Fire Keeper|Firekeeper|Guardiã do Fogo, Emerald Herald|Shanalotte',
+      incomum: 'Lautrec, Oswald|Oswald of Carim, Frampt|Kingseeker Frampt, Kaathe|Darkstalker Kaathe, Logan|Big Hat Logan, Griggs, Laurentius, Quelana, Anastacia|Anastacia of Astora, Crestfallen Warrior, Shrine Handmaid, Hawkwood, Anri|Anri of Astora, Horace, Siegward|Siegward of Catarina, Greirat, Cornyx, Irina|Irina of Carim, Eygon, Orbeck, Yuria, Leonhard, Karla, Ludleth, Yoel, Sirris, Lucatiel, Pate, Creighton, Gavlan, Straid, Benhart',
+      raro: 'Petrus, Rhea|Reah, Vince, Nico, Domhnall, Hodrick, Rosaria, Lapp, Shira, Gilligan, Shalquoir, Licia, Navlaan, Chloanne, Maughlin, Ornifex, Felkin, Carhillion, Rosabeth, Lenigrast, Grandahl, Tark|Manscorpion Tark, Alva, Dusk|Dusk of Oolacile, Elizabeth, Chester|Marvelous Chester, Gough|Hawkeye Gough, Alvina, Shiva|Shiva of the East, Giant Blacksmith, Rickert|Rickert of Vinheim, Vamos, Undead Merchant, Sieglinde, Ingward',
+      lendario: 'Tarkus|Black Iron Tarkus, Ciaran|Lord\'s Blade Ciaran, Magerold, Tsorig, Pale Shade, Gotthard, Kamui, Aslatiel, Vengarl, Drummond, Cale|Cartographer Cale, Agdayne, Saulden, Wellager, Guthry, Schmidt, Glencour, Thomas|Jester Thomas, McDuff, Melentia, Lonesome Gavlan, Stone Trader Chloanne, Lucatiel of Mirrah',
+    } },
+  { q: 'Cite um feitiço ou encantamento de Elden Ring',
+    strip: ['feitico', 'encantamento', 'magia'],
+    tiers: {
+      comum: 'Comet Azur, Glintstone Pebble, Rock Sling, Black Flame, Golden Vow, Heal|Cura, Flame of the Fell God',
+      incomum: 'Stars of Ruin, Terra Magica, Carian Slicer, Carian Greatsword, Loretta\'s Greatbow, Ranni\'s Dark Moon, Rennala\'s Full Moon, Night Comet, Meteorite of Astel, Adula\'s Moonblade, Glintblade Phalanx, Swift Glintstone Shard, Great Glintstone Shard, Comet, Gravity Well, Collapsing Stars, Founding Rain of Stars, Ancient Death Rancor, Lightning Spear, Ancient Dragons\' Lightning Strike, Dragonfire, Dragonclaw, Flame Sling, Bloodflame Blade, Swarm of Flies, Blessing of the Erdtree, Erdtree Heal, Lord\'s Heal, Flame Grant Me Strength, Bestial Sling, Elden Stars, Black Blade, Rotten Breath, Rejection, Wrath of Gold, Electrify Armament, Bloodboon',
+      raro: 'Placidusax\'s Ruin, Fortissax\'s Lightning Spear, Frenzied Burst, Inescapable Frenzy, Unendurable Frenzy, Pest Threads, Ekzykes\'s Decay, Litany of Proper Death, Order\'s Blade, Triple Rings of Light, Radagon\'s Rings of Light, Lightning Strike, Frozen Lightning Spear, Honed Bolt, Dragonbolt Blessing, Greyoll\'s Roar, Agheel\'s Flame, Smarag\'s Glintstone Breath, Borealis\'s Mist, Theodorix\'s Magma, Magma Breath, Gelmir\'s Fury, Rykard\'s Rancor, Briars of Sin, Briars of Punishment, Shatter Earth, Rock Blaster, Magma Shower, Unseen Blade, Unseen Form, Night Shard, Night Maiden\'s Mist, Thops\'s Barrier, Carian Retaliation, Shard Spiral, Glintstone Arc, Glintstone Cometshard, Star Shower, Crystal Barrage, Crystal Release, Shattering Crystal, Glintstone Icecrag, Freezing Mist, Zamor Ice Storm, Frozen Armament, Oracle Bubbles, Great Oracular Bubble, Gavel of Haima, Loretta\'s Mastery, Carian Phalanx, Greatblade Phalanx, Magic Glintblade',
+      lendario: 'Catch Flame, O Flame!, Flame Fall Upon Them, Whirl O Flame!, Surge O Flame!, Burn O Flame!, Giantsflame Take Thee, Black Flame Blade, Black Flame Ritual, Black Flame\'s Protection, Noble Presence, Bloodflame Talons, Aspects of the Crucible Tail, Aspects of the Crucible Horns, Aspects of the Crucible Breath, Aspects of the Crucible Wings, Aspects of the Crucible Thorns, Aspects of the Crucible Bloom, Barrier of Gold, Protection of the Erdtree, Discus of Light, Immutable Shield, Law of Regression, Law of Causality, Golden Lightning Fortification, Lightning Fortification, Flame Fortification, Magic Fortification, Divine Fortification, Darkness, Blessing\'s Boon, Rotten Butterflies, Poison Mist, Poison Armament, Dragonmaw, Glintstone Breath, Death Lightning, Knight\'s Lightning Spear, Midra\'s Flame of Frenzy, Light of Miquella, Spira, Minor Erdtree, Cherishing Fingers, Fire Serpent, Rain of Fire, Bestial Constitution, Bestial Vitality, Stone of Gurranq, Gurranq\'s Beast Claw, Blades of Stone, Ambush Shadow, Rings of Spectral Light, Furious Blade of Ansbach, Fleeting Microcosm, Mantle of Thorns',
+    } },
+  { q: 'Cite uma classe inicial de um jogo da FromSoftware',
+    strip: ['classe'],
+    tiers: {
+      comum: 'Vagabond|Vagabundo, Samurai, Astrologer|Astrólogo, Knight|Cavaleiro, Wretch|Miserável, Deprived|Despojado',
+      incomum: 'Prisoner|Prisioneiro, Confessor, Prophet|Profeta, Warrior|Guerreiro, Hero|Herói, Bandit|Bandido, Pyromancer|Piromante, Sorcerer|Feiticeiro, Cleric|Clérigo, Thief|Ladrão, Hunter|Caçador, Mercenary|Mercenário',
+      raro: 'Assassin|Assassino, Herald|Arauto, Explorer|Explorador, Swordsman|Espadachim, Temple Knight|Cavaleiro do Templo, Royalty|Realeza, Barbarian|Bárbaro, Wanderer|Andarilho, Magician|Mago, Priest|Sacerdote, Soldier|Soldado',
+      lendario: 'Milquetoast, Lone Survivor, Troubled Childhood, Violent Past, Professional, Military Veteran, Noble Scion, Cruel Fate, Waste of Skin, Wylder, Guardian, Ironeye, Duchess, Raider, Revenant, Recluse, Executor, Scholar, Undertaker',
+    } },
+  { q: 'Cite um personagem ou entidade da lore de Souls, Bloodborne ou Elden Ring',
+    strip: [],
+    tiers: {
+      comum: 'Gwyn, Marika|Queen Marika, Miquella, Radagon, Seath, Manus',
+      incomum: 'Nito, Witch of Izalith|Izalith, Furtive Pygmy, Gwynevere, Velka, Aldia, Vendrick, Kalameet, Godwyn|Godwyn the Golden, Godfrey, Rennala, Greater Will, Frenzied Flame, Ancient Dragons, Ciaran, Gough, Aldrich, Yhorm, Lothric|Prince Lothric, Filianore, Dark Soul, First Flame, Kos, Oedon, Willem|Master Willem, Laurence, Gehrman',
+      raro: 'Gransax, Lansseax, Fortissax, Hoarah Loux, Serosh, Destined Death, Formless Mother, Gloam-Eyed Queen, St. Trina, Two Fingers, Elphael, Nadalia, Elana, Shulva, Ornifex, Caryll, Mergo, Flora, Annalise|Queen Annalise, Ebrietas, Yharnam, Gwyn\'s Firstborn|Firstborn, Dark Sun Gwyndolin, Priscilla',
+      lendario: 'Ranah, Farum Azula, Placidusax, Gravelord, Kaathe, Frampt, Ludleth, Oceiros, Gertrude, Ibis, Isz, Byrgenwerth, Cainhurst, Logarius, Ludwig, Micolash, Rom, Amygdala, Ordovis, Messmer, Metyr, Scadutree, Marais',
+    } },
+  { q: 'Cite um personagem de Lies of P',
+    strip: [],
+    tiers: {
+      comum: 'Pinocchio|Pinóquio|P, Geppetto|Gepeto, Sophia, Gemini|Grilo',
+      incomum: 'Simon Manus|Manus, Laxasia|Laxasia the Complete, King of Puppets|Romeo|Rei das Marionetes, Nameless Puppet, Parade Master, Eugenie, Venigni, Antonia, Black Rabbit Brotherhood',
+      raro: 'Mad Donkey, Scrapped Watchman, Fuoco|King\'s Flame Fuoco, Andreus|Fallen Archbishop Andreus, Champion Victor|Victor, Green Monster of the Swamp, Puppet of the Future, Door Guardian, Alidoro, Polendina, Giangio, Carlo, Red Fox, Black Cat, Arlecchino',
+      lendario: 'Corrupted Parade Master, Eldest of the Black Rabbit Brotherhood|Eldest, Walker of Illusions, Two-faced Overseer, Markiona|Markiona Puppeteer of Death, Krat',
+    } },
+  { q: 'Cite um amuleto (charm) de Hollow Knight',
+    strip: ['amuleto', 'charm'],
+    tiers: {
+      comum: 'Unbreakable Strength|Fragile Strength, Quick Slash, Shaman Stone, Mark of Pride, Wayward Compass',
+      incomum: 'Soul Catcher, Soul Eater, Quick Focus, Grubsong, Longnail, Steady Body, Fury of the Fallen, Dashmaster, Sharp Shadow, Spell Twister, Grimmchild, Unbreakable Heart|Fragile Heart, Unbreakable Greed|Fragile Greed, Lifeblood Heart, Lifeblood Core, Kingsoul, Void Heart, Dreamshield, Glowing Womb',
+      raro: 'Thorns of Agony, Baldur Shell, Gathering Swarm, Stalwart Shell, Heavy Blow, Sprintmaster, Defender\'s Crest, Flukenest, Hiveblood, Spore Shroom, Deep Focus, Shape of Unn, Nailmaster\'s Glory, Joni\'s Blessing, Grubberfly\'s Elegy',
+      lendario: 'Dream Wielder, Weaversong, Carefree Melody',
+    } },
+  { q: 'Cite uma área de Hollow Knight',
+    strip: ['area'],
+    tiers: {
+      comum: 'Dirtmouth, City of Tears|Cidade das Lágrimas, Greenpath, Forgotten Crossroads, Deepnest',
+      incomum: 'Crystal Peak, Fungal Wastes, Kingdom\'s Edge, Queen\'s Gardens, Resting Grounds, Royal Waterways, The Abyss|Abyss, Howling Cliffs, Ancient Basin, Fog Canyon, White Palace, The Hive|Hive, Mantis Village, Godhome, Hallownest',
+      raro: 'Path of Pain, Colosseum of Fools, Blue Lake, Distant Village, Beast\'s Den, Teacher\'s Archives, Soul Sanctum, Watcher\'s Spire, Ancestral Mound, Hall of Gods, Lake of Unn, Black Egg Temple, King\'s Pass, Pantheon of Hallownest, Isma\'s Grove',
+      lendario: 'Junk Pit, Cast-Off Shell, Hidden Station, Stone Sanctuary, Weavers\' Den, Spirits\' Glade, Hallownest\'s Crown, Crystallised Mound, Overgrown Mound, Queen\'s Station, Pleasure House, Tower of Love, Failed Tramway, Fungal Core, Infected Crossroads, Birthplace',
+    } },
+  { q: 'Cite um pacto (covenant) de Dark Souls ou Bloodborne',
+    strip: ['pacto', 'covenant'],
+    tiers: {
+      comum: 'Warriors of Sunlight|Warrior of Sunlight|Sunbro, Darkwraith|Darkwraiths, Way of White, Blades of the Darkmoon|Darkmoon',
+      incomum: 'Forest Hunter, Princess\'s Guard, Gravelord Servant, Chaos Servant, Path of the Dragon, Mound-makers, Aldrich Faithful, Watchdogs of Farron, Rosaria\'s Fingers, Blue Sentinels, Spears of the Church, Vilebloods|Cainhurst, Executioners, Hunter of Hunters, Choir, School of Mensis|Mensis',
+      raro: 'Heirs of the Sun, Brotherhood of Blood, Bell Keepers, Rat King, Pilgrims of Dark, Dragon Remnants, Company of Champions, Way of Blue, League, Byrgenwerth',
+      lendario: 'Powder Kegs, Old Hunters, Workshop, Bell Keeper',
+    } },
+  { q: 'Cite um Spirit Ash (invocação) de Elden Ring',
+    strip: ['spirit ash', 'ashes', 'cinzas'],
+    tiers: {
+      comum: 'Mimic Tear|Lágrima Mimética, Black Knife Tiche|Tiche, Lone Wolf Ashes|Lone Wolf|Lobos, Jellyfish|Spirit Jellyfish|Água-viva',
+      incomum: 'Lhutel the Headless|Lhutel, Dung Eater Puppet, Latenna|Latenna the Albinauric, Banished Knight Oleg|Oleg, Banished Knight Engvall|Engvall, Ancient Dragon Knight Kristoff|Kristoff, Cleanrot Knight Finlay|Finlay, Nightmaiden & Swordstress Puppets, Redmane Knight Ogha|Ogha, Bloodhound Knight Floh|Floh, Nepheli Loux Puppet, Omenkiller Rollo|Rollo, Black Knight Commander Andreas|Andreas, Divine Bird Warrior Ornis|Ornis, Fire Knight Hilde|Hilde',
+      raro: 'Crystalian Ashes, Godrick Soldier Ashes, Skeletal Militiaman Ashes, Kaiden Sellsword Ashes, Rotten Stray Ashes, Finger Maiden Therolina Puppet|Therolina, Mausoleum Soldier Ashes, Fanged Imp Ashes, Demi-Human Ashes, Wandering Noble Ashes, Noble Sorcerer Ashes, Marionette Soldier Ashes, Dolores the Sleeping Arrow Puppet|Dolores, Jarwight Puppet, Depraved Perfumer Carmaan|Carmaan, Perfumer Tricia|Tricia, Soldjars of Fortune Ashes|Soldjars, Black Knight Captain Huw|Huw, Taylew the Golem Smith|Taylew, Curseblade Meera|Meera',
+      lendario: 'Greatshield Soldier Ashes, Albinauric Ashes, Nomad Ashes, Putrid Corpse Ashes, Winged Misbegotten Ashes, Archer Ashes, Raya Lucaria Soldier Ashes, Messmer Soldier Ashes, Fingercreeper Ashes, Stormhawk Deenh|Deenh, Battlemage Hugues Ashes, Mad Pumpkin Head Ashes, Bigmouth Imp Ashes, Gravebird Ashes, Demi-Human Swordsman Yosh|Yosh, Bloodfiend Hexer\'s Ashes, Inquisitor Ashes, Swordhand of Night Jolán Ashes',
+    } },
+  { q: 'Cite um personagem de Bloodborne',
+    strip: [],
+    tiers: {
+      comum: 'Lady Maria|Maria, Gehrman, Ludwig, Doll|Plain Doll|Boneca, Eileen|Eileen the Crow',
+      incomum: 'Father Gascoigne|Gascoigne, Djura, Alfred, Valtr, Annalise|Queen Annalise, Micolash, Master Willem|Willem, Laurence, Simon|Simon the Harrowed, Brador, Adella|Sister Adella, Arianna, Iosefka, Gilbert, Henryk, Patches|Patches the Spider, Yamamura, Logarius, Caryll, Amelia|Vicar Amelia, Oedon',
+      raro: 'Little Girl|Gascoigne\'s Daughter, Viola, Oedon Chapel Dweller, Old Woman, Suspicious Beggar, Messengers|Mensageiros, Yurie|Yurie the Last Scholar, Henriett|Old Hunter Henriett, Bloody Crow of Cainhurst, Yharnam|Queen Yharnam, Rom, Kos, Mergo, Ebrietas, Flora|Moon Presence',
+      lendario: 'Izzy, Mensis Scholar, Afflicted Beggar, Bath Messengers, Gratia',
+    } },
+  { q: 'Cite uma área de Bloodborne',
+    strip: ['area'],
+    tiers: {
+      comum: 'Yharnam|Central Yharnam, Hunter\'s Dream|Sonho do Caçador, Cathedral Ward, Old Yharnam, Byrgenwerth',
+      incomum: 'Forbidden Woods, Hemwick Charnel Lane|Hemwick, Cainhurst|Castle Cainhurst|Forsaken Cainhurst Castle, Upper Cathedral Ward, Yahar\'gul|Yahar\'gul Unseen Village, Nightmare of Mensis, Lecture Building, Fishing Hamlet, Hunter\'s Nightmare, Research Hall, Nightmare Frontier, Chalice Dungeons, Grand Cathedral, Healing Church Workshop, Astral Clocktower',
+      raro: 'Pthumeru, Loran, Isz|Isz Gravestone, Hintertomb, Oedon Chapel, Iosefka\'s Clinic, Tomb of Oedon, Moonside Lake, Mergo\'s Loft, Abandoned Old Workshop, Altar of Despair, Lumenwood Garden',
+      lendario: 'Ailing Loran, Lower Pthumeru, Pthumeru Ihyll, Lower Hintertomb, Lower Loran, Hypogean Gaol, Underground Corpse Pile, Great Isz Chalice, Witch\'s Abode, Nightmare Church',
+    } },
+  { q: 'Cite uma área de Dark Souls 3',
+    strip: ['area'],
+    tiers: {
+      comum: 'Firelink Shrine|Santuário do Elo de Fogo, High Wall of Lothric, Irithyll|Irithyll of the Boreal Valley, Anor Londo, Cathedral of the Deep, Undead Settlement',
+      incomum: 'Road of Sacrifices, Farron Keep, Catacombs of Carthus, Smouldering Lake, Irithyll Dungeon, Profaned Capital, Lothric Castle, Consumed King\'s Garden, Grand Archives, Untended Graves, Archdragon Peak, Kiln of the First Flame, Painted World of Ariandel|Ariandel, The Ringed City|Ringed City, Cemetery of Ash',
+      raro: 'Dreg Heap, Filianore\'s Rest, Church of Yorshka, Cleansing Chapel, Halfway Fortress, Crucifixion Woods, Old Wolf of Farron, Corvian Settlement, Depths of the Painting, Ariandel Chapel',
+      lendario: 'Ringed Inner Wall, Shared Grave, Dragon Barracks, Mausoleum Lookout, Keep Ruins, Farron Keep Perimeter, Distant Manor, Water Reserve, Snowfield, Ringed City Streets',
+    } },
+  { q: 'Cite um personagem da Nintendo',
+    strip: [],
+    tiers: {
+      comum: 'Mario, Luigi, Princesa Peach|Peach, Link, Pikachu, Yoshi, Donkey Kong, Kirby, Bowser',
+      incomum: 'Zelda|Princesa Zelda, Samus|Samus Aran, Wario, Toad, Fox|Fox McCloud, Ness, Ganondorf, Diddy Kong, Daisy|Princesa Daisy, Rosalina, Waluigi, Captain Falcon, Pit, Marth, Isabelle, Tom Nook, Inkling, Olimar|Capitão Olimar, Sheik, Rei Dedede|King Dedede, Meta Knight, Shy Guy, Boo, Koopa Troopa|Koopa, Goomba, Toadette, Bowser Jr., Birdo, Lakitu, Chain Chomp',
+      raro: 'Falco, Ice Climbers|Popo|Nana, Mr. Game & Watch|Game & Watch, Lucas, Roy, Ike, Lucina, Robin, Corrin, Shulk, Palutena, Villager|Aldeão, K.K. Slider|Totakeke, Professor E. Gadd|E. Gadd, Captain Toad, Pauline, Cappy, Paper Mario, Petey Piranha, Kamek, Dry Bones, Bob-omb, Wiggler, Tingle, Midna, Navi, Epona, Ridley, Kraid, Mother Brain, Dark Samus, Slippy, Peppy, Wolf|Wolf O\'Donnell, Pyra|Mythra, Mii, Wii Fit Trainer, R.O.B.|ROB, Duck Hunt, Funky Kong, Cranky Kong, Dixie Kong, King K. Rool|K. Rool',
+      lendario: 'Stanley, Takamaru, Dillon, Ashley, Mona, Jimmy T, 9-Volt, Dr. Crygor, Orbulon, Kat & Ana, Little Mac, Doc Louis, Nabbit, Toadsworth, Lubba, Luma, Fawful, Cackletta, Dimentio, Count Bleck, Tiny Kong, Lanky Kong, Chunky Kong, Squawks, Rambi, Enguarde, Waddle Dee, Bandana Dee, Magolor, Marx, Adeleine, Gooey, Galacta Knight, Kracko, Whispy Woods, Captain Syrup, Tatanga, Rawk Hawk, Geno, Mallow, Smithy',
+    } },
+  { q: 'Cite um personagem de Mortal Kombat',
+    strip: [],
+    tiers: {
+      comum: 'Scorpion, Sub-Zero, Raiden, Liu Kang, Johnny Cage, Sonya Blade|Sonya, Kitana, Shao Kahn',
+      incomum: 'Mileena, Kung Lao, Jax|Jax Briggs, Kano, Baraka, Goro, Reptile, Smoke, Noob Saibot|Noob, Shang Tsung, Quan Chi, Jade, Cyrax, Sektor, Ermac, Kabal, Nightwolf, Sindel, Kenshi, Kotal Kahn, Cassie Cage, Shinnok, D\'Vorah, Erron Black, Jacqui Briggs, Kung Jin, Takeda, Frost, Skarlet, Stryker, Sheeva, Kintaro, Motaro',
+      raro: 'Rain, Tanya, Li Mei, Bo\' Rai Cho, Fujin, Nitara, Havik, Hsu Hao, Kai, Ashrah, Dairou, Darrius, Hotaru, Kobra, Kira, Mavado, Moloch, Onaga, Blaze, Shujinko, Taven, Daegon, Ferra/Torr|Ferra|Torr, Tremor, Chameleon, Khameleon, Geras, Cetrion, Kollector, Kronika, Reiko, Jarek, Sareena',
+      lendario: 'Mokap, Hornbuckle, Meat, Drahmin, Kia, Jataaka, Tasia, Belokk, Freddy Krueger, Kratos, Predator, Alien, Jason Voorhees, Leatherface, Terminator|T-800, RoboCop, Rambo, Joker|Coringa, Spawn, Homelander, Omni-Man, Peacemaker, Conan, Ghostface, T-1000, Titan Havik, Janet Cage, Madam Bo',
+    } },
+  { q: 'Cite um personagem de Street Fighter',
+    strip: [],
+    tiers: {
+      comum: 'Ryu, Ken|Ken Masters, Chun-Li, Guile, Blanka, Zangief, M. Bison|Bison, Dhalsim, E. Honda|Honda',
+      incomum: 'Akuma|Gouki, Cammy, Sagat, Vega, Balrog, Dee Jay, Fei Long, T. Hawk, Juri, Sakura, Dan|Dan Hibiki, Gen, Rose, Ibuki, Makoto, Cody, Guy, Rolento, Charlie|Nash, Rashid, Luke, Jamie, Kimberly, Lily, Manon, Marisa, JP, A.K.I.|AKI, Ed, Gouken, Seth, Abel, El Fuerte, C. Viper|Viper, Rufus, Hakan, Poison, Hugo',
+      raro: 'Alex, Dudley, Elena, Necro, Oro, Q, Remy, Sean, Twelve, Urien, Yang, Yun, Gill, Karin, Laura, Necalli, F.A.N.G.|FANG, Birdie, Rainbow Mika|R. Mika, Menat, Zeku, Kolin, Falke, G, Adon, Sodom, Evil Ryu, Oni, Decapre, Terry|Terry Bogard, Mai|Mai Shiranui, Sheng Long',
+      lendario: 'Eagle, Lee, Joe, Retsu, Geki, Mike, Juni, Juli, Ingrid, Maki, Akira|Akira Kazama, Violent Ken, Allen Snider, Blair Dame, Cracker Jack, Darun Mister, Doctrine Dark, Kairi, Hokuto, Garuda, Shadow, Skullomania, Sharon, Pullum Purna, Area, Nanase, Hayate, Shin Akuma',
+    } },
+  { q: 'Cite um personagem de The Legend of Zelda',
+    strip: [],
+    tiers: {
+      comum: 'Link, Zelda|Princesa Zelda, Ganondorf|Ganon, Navi, Epona',
+      incomum: 'Midna, Impa, Sheik, Tingle, Skull Kid, Majora, Tetra, Groose, Fi, Ghirahim, Zant, Sidon, Mipha, Urbosa, Revali, Daruk, Hestu, Kass, Riju, Beedle, Saria, Malon, Darunia, Ruto|Princesa Ruto, Nabooru, Rauru, Sonia, Mineru, Purah, Robbie, Paya, King Rhoam|Rei Rhoam, Calamity Ganon, Demise, Vaati, Great Deku Tree|Árvore Deku, Kaepora Gaebora, Korok|Koroks, Great Fairy|Grande Fada',
+      raro: 'Yuga, Hilda, Ravio, Tatl, Tael, Happy Mask Salesman|Vendedor de Máscaras, Kafei, Anju, Romani, Cremia, Twinrova|Koume|Kotake, Bongo Bongo, Volvagia, Gohma, King Dodongo|Dodongo, Phantom Ganon, Dark Link, Agahnim, Linebeck, Medli, Makar, Valoo, King of Red Lions, Ezlo, Ilia, Colin, Telma, Ashei, Shad, Auru, Rusl, Agitha, Ooccoo, Postman|Carteiro, Cia, Lana, Yunobo, Teba, Tulin, Master Kohga|Kohga, Terrako, Astor, Tri',
+      lendario: 'Kaneli, Ralis, Muzu, Bolson, Hudson, Kilton, Granté, Ingo, Talon, Mido, Dampé, Biggoron, Medigoron, Jabu-Jabu, Sakon, Gongoron, Oshus, Jolene, Niko, Quill, Komali, Tott, Ricky, Moosh, Dimitri, Maple, Syrup, Din, Nayru, Farore, Hylia, Rosso, Shiro, Cado, Owlan, Gaepora, Batreaux, Scrapper, Levias, Faron, Eldin, Lanayru',
+    } },
+  { q: 'Cite um campeão de League of Legends',
+    strip: ['campeao'],
+    tiers: {
+      comum: 'Yasuo, Lux, Ahri, Teemo, Jinx, Lee Sin, Zed, Ezreal, Garen, Darius, Thresh',
+      incomum: 'Annie, Ashe, Master Yi, Vayne, Katarina, Riven, Akali, Caitlyn, Vi, Ekko, Jayce, Viktor, Yone, Kai\'Sa, Leona, Morgana, Malphite, Blitzcrank, Nasus, Renekton, Draven, Miss Fortune, Sona, Soraka, Janna, Nami, Lulu, Amumu, Warwick, Twisted Fate, Fiora, Irelia, Jax, Shaco, Evelynn, Sett, Pyke, Seraphine, Samira, Viego, Sylas, Senna, Yuumi, Kayn, Rengar, Kha\'Zix, Graves, Lucian, Jhin, Xayah, Rakan, Tristana, Heimerdinger, Singed, Mordekaiser, Veigar, Brand, Syndra, Fizz, LeBlanc, Talon, Kassadin, Malzahar, Twitch, Tryndamere, Olaf, Dr. Mundo|Mundo, Jarvan IV|Jarvan, Xin Zhao, Wukong, Pantheon, Nunu|Nunu & Willump, Gragas, Nidalee, Elise, Hecarim, Nocturne',
+      raro: 'Ziggs, Sion, Karthus, Orianna, Cassiopeia, Zyra, Vel\'Koz, Xerath, Zilean, Ryze, Anivia, Kog\'Maw, Varus, Kindred, Kennen, Gnar, Rumble, Shen, Kayle, Udyr, Sejuani, Zac, Rammus, Alistar, Taric, Braum, Bard, Nautilus, Rell, Galio, Poppy, Volibear, Trundle, Illaoi, Camille, Aatrox, Urgot, Yorick, Gangplank, Quinn, Kalista, Sivir, Corki, Swain, Zoe, Neeko, Qiyana, Akshan, Gwen, Vex, Zeri, Lillia, Aphelios, Diana, Lissandra, Karma, Ornn, Tahm Kench, Cho\'Gath, Vladimir, Shyvana, Fiddlesticks, Maokai, Smolder, Hwei, Briar, Aurora, Ambessa, Mel',
+      lendario: 'Ivern, Skarner, Rek\'Sai, Azir, Taliyah, Kled, Aurelion Sol, Renata Glasc|Renata, Bel\'Veth, Nilah, K\'Sante, Milio, Naafiri, Yunara, Zaahen',
+    } },
+  { q: 'Cite um agente de Valorant',
+    strip: ['agente'],
+    tiers: {
+      comum: 'Jett, Reyna, Sage, Phoenix, Raze',
+      incomum: 'Sova, Omen, Brimstone, Viper, Cypher, Killjoy, Skye, Chamber, Neon, Fade, Breach',
+      raro: 'Yoru, Astra, KAY/O|Kayo, Harbor, Gekko, Clove, Iso',
+      lendario: 'Deadlock, Vyse, Tejo, Waylay, Veto',
+    } },
+  { q: 'Cite um herói de Overwatch',
+    strip: ['heroi'],
+    tiers: {
+      comum: 'Tracer, Genji, Mercy, D.Va|DVa, Reinhardt, Widowmaker, Hanzo',
+      incomum: 'Soldier: 76|Soldier 76|Soldado 76, Reaper, Cassidy|McCree, Pharah, Mei, Winston, Lúcio, Zenyatta, Ana, Bastion, Torbjörn, Junkrat, Roadhog, Symmetra, Zarya, Moira, Sombra, Ashe, Brigitte, Doomfist, Orisa, Sigma, Echo, Kiriko',
+      raro: 'Wrecking Ball|Hammond, Baptiste, Sojourn, Junker Queen, Ramattra, Lifeweaver, Illari, Mauga, Venture, Juno, Hazard',
+      lendario: 'Freja, Wuyang, Athena, Ganymede, B.O.B.|Bob, Efi|Efi Oladele, Snowball, Pachimari, Mondatta, Vendetta, Anran, Jetpack Cat',
+    } },
+  { q: 'Cite um herói de Dota 2',
+    strip: ['heroi'],
+    tiers: {
+      comum: 'Pudge, Invoker, Anti-Mage, Crystal Maiden, Juggernaut, Axe, Phantom Assassin',
+      incomum: 'Sniper, Drow Ranger, Shadow Fiend, Lina, Lion, Earthshaker, Sven, Faceless Void, Slark, Templar Assassin, Storm Spirit, Rubick, Tinker, Techies, Mirana, Zeus, Bristleback, Legion Commander, Spectre, Medusa, Riki, Bounty Hunter, Windranger, Queen of Pain, Slardar, Tidehunter, Kunkka, Dragon Knight, Huskar, Necrophos, Witch Doctor, Shadow Shaman, Ursa, Viper, Venomancer, Morphling, Terrorblade, Troll Warlord, Wraith King, Alchemist, Meepo',
+      raro: 'Batrider, Beastmaster, Broodmother, Centaur Warrunner, Chaos Knight, Clinkz, Clockwerk, Dark Seer, Dazzle, Death Prophet, Disruptor, Doom, Enigma, Gyrocopter, Jakiro, Lich, Lifestealer, Luna, Lycan, Magnus, Naga Siren, Nature\'s Prophet, Night Stalker, Nyx Assassin, Ogre Magi, Omniknight, Outworld Destroyer, Puck, Razor, Sand King, Silencer, Skywrath Mage, Spirit Breaker, Tiny, Treant Protector, Tusk, Undying, Vengeful Spirit, Warlock, Weaver, Abaddon, Ancient Apparition, Bane, Bloodseeker, Earth Spirit, Ember Spirit, Void Spirit, Phoenix, Pangolier, Mars, Monkey King',
+      lendario: 'Chen, Io, Arc Warden, Visage, Lone Druid, Brewmaster, Elder Titan, Ringmaster, Kez, Muerta, Marci, Primal Beast, Dawnbreaker, Hoodwink, Snapfire, Dark Willow, Grimstroke, Winter Wyvern, Oracle, Underlord, Enchantress, Keeper of the Light, Leshrac, Shadow Demon, Phantom Lancer, Largo',
+    } },
+  { q: 'Cite um mob (criatura) de Minecraft',
+    strip: ['mob'],
+    tiers: {
+      comum: 'Creeper, Zumbi|Zombie, Esqueleto|Skeleton, Enderman, Aranha|Spider, Ender Dragon|Dragão do Fim, Vaca|Cow, Porco|Pig',
+      incomum: 'Galinha|Chicken, Ovelha|Sheep, Lobo|Wolf, Gato|Cat, Jaguatirica|Ocelot, Aldeão|Villager, Golem de Ferro|Iron Golem, Wither, Blaze, Ghast, Slime, Bruxa|Witch, Piglin, Piglin Zumbi|Zombie Piglin|Zombie Pigman, Guardião|Guardian, Phantom, Cavalo|Horse, Abelha|Bee, Axolotl|Axolote, Warden, Saqueador|Pillager, Shulker, Allay, Raposa|Fox, Panda, Golfinho|Dolphin, Tartaruga|Turtle, Coelho|Rabbit, Lhama|Llama, Papagaio|Parrot, Bode|Goat, Sapo|Frog, Camelo|Camel, Sniffer|Farejador, Tatu|Armadillo, Breeze, Hoglin',
+      raro: 'Evoker|Invocador, Vindicator|Vindicador, Ravager|Devastador, Vex, Guardião Ancião|Elder Guardian, Traça|Silverfish, Endermite, Cubo de Magma|Magma Cube, Esqueleto Wither|Wither Skeleton, Stray|Errante, Husk, Afogado|Drowned, Strider, Zoglin, Piglin Bruto|Piglin Brute, Mooshroom|Vaca de Cogumelo, Urso Polar|Polar Bear, Lula|Squid, Lula Brilhante|Glow Squid, Morcego|Bat, Golem de Neve|Snow Golem, Comerciante Nômade|Wandering Trader, Mula|Mule, Burro|Donkey, Cavalo Esqueleto|Skeleton Horse, Aldeão Zumbi|Zombie Villager, Bacalhau|Cod, Salmão|Salmon, Peixe Tropical|Tropical Fish, Baiacu|Pufferfish, Girino|Tadpole, Bogged, Creaking',
+      lendario: 'Ilusionista|Illusioner, Gigante|Giant, Cavalo Zumbi|Zombie Horse, Coelho Assassino|Killer Bunny, Herobrine, Steve, Alex, Galinha Jóquei|Chicken Jockey, Aranha Jóquei|Spider Jockey, Lhama de Comerciante|Trader Llama, Moobloom, Glare, Iceologer, Golem de Cobre|Copper Golem, Happy Ghast|Ghast Feliz, Ghastling, Johnny, Jeb_|Jeb, Dinnerbone, Notch, Agent, Rana, Black Steve, Beast Boy',
+    } },
+  { q: 'Cite um personagem de Final Fantasy',
+    strip: [],
+    tiers: {
+      comum: 'Cloud|Cloud Strife, Sephiroth, Tifa|Tifa Lockhart, Aerith|Aeris, Squall|Squall Leonhart, Tidus, Noctis, Lightning',
+      incomum: 'Barret, Vincent|Vincent Valentine, Yuffie, Cid|Cid Highwind, Red XIII, Cait Sith, Zack|Zack Fair, Rinoa, Zell, Quistis, Selphie, Irvine, Seifer, Laguna, Yuna, Wakka, Lulu, Auron, Rikku, Kimahri, Zidane, Garnet|Dagger, Vivi, Steiner, Kuja, Terra|Terra Branford, Locke, Celes, Edgar, Sabin, Kefka, Shadow, Cecil, Kain, Rydia, Golbez, Prompto, Gladiolus|Gladio, Ignis, Ardyn, Clive|Clive Rosfield, Jill, Joshua, Vaan, Ashe, Balthier, Fran, Basch, Snow, Hope, Vanille, Fang, Sazh, Serah, Caius, Moogle|Mog, Chocobo, Bahamut, Ifrit, Shiva, Odin, Ramuh, Jecht, Seymour, Ultimecia, Exdeath, Garland',
+      raro: 'Galuf, Bartz, Faris, Lenna|Reina, Krile, Firion, Emperor Mateus|Mateus, Luneth, Arc, Refia, Ingus, Cloud of Darkness, Edge, Rosa, Tellah, Yang, Palom, Porom, Fusoya, Zemus, Gogo, Umaro, Relm, Strago, Cyan, Gau, Setzer, Quina, Eiko, Amarant, Freya, Beatrix, Necron, Paine, Shuyin, Larsa, Penelo, Vayne, Gilgamesh, Ultros, Tonberry, Cactuar, Lunafreya|Luna, Regis, Ravus, Aranea, Iris, Cor, Benedikta, Dion, Barnabas, Cidolfus, Torgal, Edea, Raijin, Fujin, Adel, Kiros, Ward, Ellone, Biggs, Wedge, Jessie, Rufus|Rufus Shinra, Reno, Rude, Tseng, Hojo, Jenova, Genesis, Angeal',
+      lendario: 'Minwu, Josef, Ricard, Gordon, Leila, Desch, Xande, Cid Pollendina, Edward, Gilbart, Kluya, Banon, Leo|General Leo, Gestahl, Siegfried, Elena, Scarlet, Heidegger, Palmer, Don Corneo, Dyne, Marlene, Bugenhagen, Zangan, Lucrecia, Nero, Weiss, Rosso, Azul, Shelke, Cissnei, Hollander, Odine, Cid Kramer, Martine, Zone, Watts, Brahne, Regent Cid, Lani, Marcus, Blank, Cinna, Ruby, Maechen, O\'aka, Rin, Belgemine, Lucil, Elma, Clasko, Isaaru, Dona, Barthello, Nooj, Gippal, Baralai, LeBlanc, Ormi, Logos',
+    } },
+  { q: 'Cite um personagem de Resident Evil',
+    strip: [],
+    tiers: {
+      comum: 'Leon|Leon S. Kennedy|Leon Kennedy, Jill|Jill Valentine, Chris|Chris Redfield, Claire|Claire Redfield, Ada|Ada Wong, Wesker|Albert Wesker, Nemesis',
+      incomum: 'Ethan|Ethan Winters, Lady Dimitrescu|Dimitrescu, Mr. X|Tyrant, Rebecca|Rebecca Chambers, Barry|Barry Burton, Sherry|Sherry Birkin, Ashley|Ashley Graham, Luis|Luis Sera, Carlos|Carlos Oliveira, Billy|Billy Coen, Sheva|Sheva Alomar, Jake|Jake Muller, Piers|Piers Nivans, Mia|Mia Winters, Jack Baker, Marguerite Baker, Lucas Baker, Eveline, Mother Miranda|Miranda, Heisenberg|Karl Heisenberg, Donna Beneviento, Salvatore Moreau|Moreau, Rose Winters|Rose, HUNK, Salazar|Ramon Salazar, Saddler|Osmund Saddler, Krauser|Jack Krauser, William Birkin|Birkin, Annette Birkin, Brad Vickers, The Duke|Duke, Merchant|Mercador, Zoe Baker',
+      raro: 'Nicholai, Mikhail, Steve Burnside|Steve, Alexia Ashford|Alexia, Alfred Ashford, Excella Gionne|Excella, Irving, Ozwell Spencer|Spencer, James Marcus|Marcus, Moira Burton|Moira, Natalia Korda|Natalia, Alex Wesker, Derek Simmons|Simmons, Helena Harper|Helena, Robert Kendo|Kendo, Marvin Branagh|Marvin, Ben Bertolucci, Brian Irons|Irons, Bitores Mendez|Mendez, El Gigante, Verdugo, Lisa Trevor, Enrico Marini|Enrico, Richard Aiken, Forest Speyer, Joseph Frost, Ingrid Hunnigan|Hunnigan, Jessica Sherawat, Parker Luciani, Raymond Vester, Grace Ashcroft',
+      lendario: 'Kevin Ryman, Cindy Lennox, Mark Wilkins, George Hamilton, Alyssa Ashcroft, Yoko Suzuki, Jim Chapman, David King, Ark Thompson, Bruce McGivern, Fong Ling, Lott Klein, Lily Klein, Morgan Lansdale, Sergei Vladimir, Manuela Hidalgo, Rodrigo Juan Raval, Tyrell Patrick, Kenneth Sullivan, Edward Dewey, Kevin Dooley, Angela Miller, Curtis Miller, Carla Radames, Glenn Arias, Vincent Goldman',
+    } },
+  { q: 'Cite um personagem de God of War',
+    strip: [],
+    tiers: {
+      comum: 'Kratos, Atreus|Atreu|Loki, Zeus, Freya, Baldur, Thor, Odin',
+      incomum: 'Mimir, Brok, Sindri, Ares, Athena|Atena, Poseidon, Hades, Hermes, Hercules|Hércules, Helios|Hélio, Hera, Cronos|Kronos, Gaia, Freyr, Tyr, Angrboda, Heimdall, Sif, Thrud, Faye|Laufey, Jörmungandr|Serpente do Mundo, Magni, Modi, Pandora, Calliope|Calíope, Deimos, Hephaestus|Hefesto, Aphrodite|Afrodite, Persephone|Perséfone, Fenrir, Surtr, Sinmara, Ratatoskr, Lysandra, Orkos',
+      raro: 'Valkyrie Queen|Rainha Valquíria|Sigrun, Medusa, Hydra|Hidra, Cerberus|Cérbero, Charon|Caronte, Prometheus|Prometeu, Theseus|Teseu, Atlas, Thanatos|Tânatos, Callisto|Calisto, Daedalus|Dédalo, Icarus|Ícaro, Megaera|Megera, Tisiphone|Tisífone, Alecto, Kvasir, Nidhogg, Garm, Gryla, Groa, Hyperion|Hiperião',
+      lendario: 'Gna, Gondul, Hildr, Rota, Eir, Olrun, Kara, Geirdriful, Hrist, Mist, Durlin, Lunda, Chaurli, Otr, Hraezlyr, Andvari, Alrik, Euryale, Castor, Pollux, Clotho|Cloto, Lachesis|Láquesis, Atropos|Átropos, Perses, Peirithous|Pirítoo, Erinys|Erínia, Ingrid, Birgir, Skjothendi, Hrimthur, Lorkin',
+    } },
+  { q: 'Cite um personagem de Sonic',
+    strip: [],
+    tiers: {
+      comum: 'Sonic, Tails|Miles Prower, Knuckles, Amy|Amy Rose, Shadow, Eggman|Dr. Eggman|Robotnik',
+      incomum: 'Silver, Rouge, Blaze|Blaze the Cat, Cream|Cream the Rabbit, Big|Big the Cat, Metal Sonic, Chaos, Espio, Vector, Charmy, Cheese|Chao, Infinite, Jet|Jet the Hawk, Wave, Storm, Mighty, Ray, Omega|E-123 Omega, Gamma|E-102 Gamma, Zavok, Orbot, Cubot, Super Sonic, Sticks, Tikal, Mephiles, Black Doom, Gerald Robotnik|Gerald, Maria|Maria Robotnik, Sage',
+      raro: 'Fang|Nack|Fang the Sniper, Bean|Bean the Dynamite, Bark|Bark the Polar Bear, Marine|Marine the Raccoon, Vanilla|Vanilla the Rabbit, Shade|Shade the Echidna, Emerl, Gemerl, Tangle, Whisper, Surge, Pachacamac, Erazor Djinn, Eggman Nega, Lyric, Iblis, Solaris, Dark Gaia, Chip|Light Gaia, Merlina, Wisp|Wisps, Hyper Sonic, Sonic.exe, Sally|Sally Acorn, Scourge',
+      lendario: 'Yacker, Zazz, Zomom, Zik|Master Zik, Zeena, Zor, Honey|Honey the Cat, Trip|Trip the Sungazer, Scratch, Grounder, Bunnie|Bunnie Rabbot, Antoine, Rotor, Nicole, Kintobor, Heavy, Bomb, Mecha Knuckles, Tails Doll, Shard, Fleetway Sonic|Fleetway, Belle, Mimic, Starline, Clutch, Jewel, Coconuts, Snively, Mina Mongoose, Kit|Kit the Fennec, Classic Sonic, Werehog|Sonic the Werehog, Darkspine Sonic, Nine',
+    } },
+  { q: 'Cite um mapa de Counter-Strike',
+    strip: ['mapa'],
+    tiers: {
+      comum: 'Dust 2|Dust2|Dust II|de_dust2, Mirage, Inferno, Nuke',
+      incomum: 'Train, Overpass, Vertigo, Ancient, Anubis, Cache, Office, Italy, Assault, Aztec, Cobblestone|Cobble, Dust|Dust 1',
+      raro: 'Tuscan, Season, Militia, Piranesi, Prodigy, Chateau, Havana, Estate, Siege, Agency, Lake, Shortdust, Safehouse, St. Marc|Stmarc, Bank, Sugarcane, Canals, Insertion, Zoo, Abbey, Austria, Biome, Subzero, Breach, Swamp, Mutiny, Basalt, Edin, Grail, Jura, Palais, Whistle, Thera, Mills, Memento, Pool Day|Poolday',
+      lendario: 'Iceworld|fy_iceworld, Aim Map|aim_map, AWP India|awp_india, awp_map, 747|cs_747, Backalley|cs_backalley, Torn, Survivor, Airstrip, Storm, Soccer|ka_soccer, Surf Ski|surf_ski, 35hp|35hp_2, Fy_snow|Snow, Rats|cs_rats, Downed, Contra, Thrill, Vostok, Facade, Nightfever, Assembly, Norway, Overgrown, Rialto, Lunacy, Workout, Shipped, Black Gold, Frostbite, Coast, Empire, Blagai, Ravine, Pitstop, Golden, Elysion, Calavera',
+    } },
+  { q: 'Cite uma arma ou item de Counter-Strike',
+    strip: ['arma'],
+    tiers: {
+      comum: 'AK-47|AK, AWP, M4A1|M4A1-S|M4, Desert Eagle|Deagle, Glock|Glock-18, USP|USP-S',
+      incomum: 'M4A4, Famas, Galil|Galil AR, MP9, MAC-10, P90, UMP-45|UMP, Scout|SSG 08, AUG, SG 553|SG 552|Krieg, Faca|Knife, P250, Five-SeveN|Five Seven, Tec-9, CZ75-Auto|CZ75, Dual Berettas|Berettas, Nova, XM1014, MP7, Negev, M249, HE Grenade|Granada|HE, Flashbang|Flash, Smoke|Granada de fumaça, Molotov, Incendiária|Incendiary, C4|Bomba, Zeus|Zeus x27|Taser',
+      raro: 'MP5-SD|MP5, PP-Bizon|Bizon, Sawed-Off, MAG-7, G3SG1, SCAR-20|Scar, R8 Revolver|R8|Revolver, P2000, Decoy|Decoy Grenade, Kevlar|Colete, Defuse Kit|Kit de desarme, Karambit, Butterfly Knife|Faca borboleta|Butterfly, M9 Bayonet, Bayonet|Baioneta, Gut Knife, Flip Knife, Huntsman, Falchion, Shadow Daggers, Bowie Knife, Navaja, Stiletto, Talon Knife, Ursus, Skeleton Knife, Nomad Knife, Paracord, Survival Knife, Classic Knife, Kukri',
+      lendario: 'Krieg 550|SG 550, TMP|Steyr TMP, P228, Tactical Shield|Escudo, Night Vision|Visão noturna, Healthshot, TA Grenade|Tactical Awareness Grenade, Breach Charge, Bump Mine, ExoJump, Fists|Punhos, Tablet, Snowball|Bola de neve, Axe|Machado, Hammer|Martelo, Wrench|Chave inglesa, Riot Shield, Parachute|Paraquedas, Repulsor Device',
+    } },
+  { q: 'Cite um estúdio ou empresa de games',
+    strip: ['estudio', 'empresa'],
+    tiers: {
+      comum: 'Nintendo, Rockstar|Rockstar Games, FromSoftware|From Software, Ubisoft, EA|Electronic Arts, Sony, Microsoft, Epic Games|Epic',
+      incomum: 'Naughty Dog, Santa Monica|Santa Monica Studio, CD Projekt Red|CD Projekt, Bethesda, Valve, Blizzard, Capcom, Square Enix, Bandai Namco|Namco, Konami, Sega, Riot|Riot Games, Mojang, Activision, Insomniac, Guerrilla|Guerrilla Games, Sucker Punch, Bungie, Respawn, Treyarch, Infinity Ward, BioWare, Larian, Supercell, Garena, miHoYo|HoYoverse, Game Freak, Kojima Productions, Team Cherry, Atlus, PlatinumGames|Platinum Games, Koei Tecmo, Team Ninja, Retro Studios, Monolith Soft, 343 Industries, id Software, Arkane, MachineGames, Remedy, Quantic Dream, Rocksteady, NetherRealm, Hello Games, Psyonix',
+      raro: 'Game Science, Neowiz, Round8|Round 8, Hexworks, Deck13, Cold Symmetry, Gunfire Games, Krafton, NCSoft, Nexon, Pearl Abyss, Shift Up, Grasshopper Manufacture|Grasshopper, Clover Studio, Level-5, Intelligent Systems, HAL Laboratory|HAL, Rare, Media Molecule, Bluepoint|Bluepoint Games, Japan Studio, Polyphony Digital, Housemarque, Firaxis, Paradox, Creative Assembly, Obsidian, inXile, Double Fine, Supergiant|Supergiant Games, ConcernedApe, Re-Logic, Motion Twin, Klei, Mega Crit, Devolver|Devolver Digital, Annapurna|Annapurna Interactive, Thatgamecompany, Playdead, Mossmouth, Studio MDHR, Extremely OK Games|Maddy Makes Games, Hazelight, Avalanche Studios, IO Interactive, Crystal Dynamics, Eidos Montréal|Eidos, People Can Fly, Techland, 4A Games, GSC Game World, Frictional, Red Barrels, Kinetic Games, Ghost Ship Games, Iron Gate, Coffee Stain, Mimimi, Saber Interactive, Sledgehammer, Raven Software, Turn 10, Playground Games, Ninja Theory, Compulsion, Arc System Works, SNK, Cygames, Vanillaware, Nippon Ichi, Spike Chunsoft, tri-Ace, Nihon Falcom|Falcom, Gust',
+      lendario: 'Sting, Treasure, Compile, Hudson Soft|Hudson, Technos, Irem, Taito, Data East, Toaplan, Cave, Westwood, Origin Systems, Looking Glass, Ion Storm, Troika, Black Isle, Interplay, Sierra, LucasArts, Psygnosis, Bullfrog, DMA Design, Core Design, Ensemble Studios|Ensemble, Pandemic Studios, Visceral, Midway, Acclaim, THQ, Infogrames, Squaresoft|Square, Enix, Quintet, Climax Entertainment, Game Arts, Sonic Team, Team Silent, Tango Gameworks, Access Games, Marvelous, Grezzo, Next Level Games, Good-Feel, Behaviour, Aquiris, Behold Studios, Long Hat House, Swordtales, JoyMasher, Dumativa, Kokku, Hoplon, Mad Mimic, Pocket Trap, Tapps',
+    } },
+  { q: 'Cite um criador, diretor ou compositor de games',
+    strip: [],
+    tiers: {
+      comum: 'Hidetaka Miyazaki|Miyazaki, Hideo Kojima|Kojima, Shigeru Miyamoto|Miyamoto, Todd Howard',
+      incomum: 'Satoru Iwata|Iwata, Masahiro Sakurai|Sakurai, Neil Druckmann|Druckmann, Cory Barlog|Barlog, Gabe Newell|Gabe, John Carmack|Carmack, John Romero|Romero, Hideki Kamiya|Kamiya, Shinji Mikami|Mikami, Yoko Taro, Toby Fox, Eric Barone|ConcernedApe, Markus Persson|Notch, Sid Meier, Will Wright, Hironobu Sakaguchi|Sakaguchi, Yuji Naka, Tetsuya Nomura|Nomura, Ken Levine, Peter Molyneux|Molyneux, Josef Fares, Dan Houser, Sam Houser, Phil Spencer, Shuhei Yoshida, Reggie Fils-Aimé|Reggie, Eiji Aonuma|Aonuma, Koji Kondo, Yuji Horii, Akira Toriyama, Nobuo Uematsu|Uematsu',
+      raro: 'Suda51|Goichi Suda, Fumito Ueda|Ueda, Keiichiro Toyama, Jenova Chen, Jonathan Blow, Phil Fish, Edmund McMillen, Derek Yu, Lucas Pope, Tim Schafer, Ron Gilbert, Warren Spector, Richard Garriott|Lord British, Swery|Swery65|Hidetaka Suehiro, Naoki Yoshida|Yoshi-P, Katsura Hashino, Tetsuya Mizuguchi, Yu Suzuki, Toru Iwatani, Gunpei Yokoi, Hiroshi Yamauchi, Ralph Baer, Nolan Bushnell, Alexey Pajitnov|Pajitnov, Ari Gibson, William Pellen, Ted Price, Amy Hennig, Jade Raymond, Kim Swift, Mark Cerny, Josh Sawyer, Chris Avellone, Brian Fargo, Swen Vincke, Sam Lake, Tim Sweeney, Cliff Bleszinski|CliffyB, American McGee, Koji Igarashi|IGA, Keiji Inafune|Inafune, Yoshinori Ono, Katsuhiro Harada|Harada, Ed Boon, Hideaki Itsuno|Itsuno, Yoko Shimomura, Akira Yamaoka, Mick Gordon, Darren Korb, Motoi Sakuraba|Sakuraba, Yuka Kitamura',
+      lendario: 'Yui Tanimura, Junya Ishizaki, Masaru Yamamura, Toshifumi Nabeshima, Tsukasa Saitoh, Masaaki Yamagiwa, George R. R. Martin, David Jaffe, Stig Asmussen, Choi Ji-won, Feng Ji, Tom Happ, Maddy Thorson, Daisuke Amaya|Pixel, Terry Cavanagh, Rami Ismail, Jan Willem Nijman, Davey Wreden, Zach Barth, Thomas Grip, Dan Pinchbeck, Lena Raine, Austin Wintory, Jesper Kyd, Yasunori Mitsuda, Martin O\'Donnell, Hiroki Kikuta, Christopher Larkin, Shoi Miyazawa, Kota Hoshino, Hideyuki Fukasawa, Nobuyoshi Suzuki, Thais Weiller',
+    } },
+  { q: 'Cite um gênero de videogame',
+    strip: ['genero', 'jogo de'],
+    tiers: {
+      comum: 'RPG, FPS|Tiro em primeira pessoa, Ação, Aventura, Corrida, Esporte, Luta, Terror|Horror',
+      incomum: 'Soulslike|Souls-like, MOBA, Battle Royale, Plataforma, Metroidvania, Estratégia, RTS, MMORPG|MMO, Sandbox, Mundo aberto|Open world, Puzzle|Quebra-cabeça, Simulação, Sobrevivência|Survival, Roguelike, Roguelite, Hack and slash, Stealth|Furtividade, Shooter|Tiro, TPS|Tiro em terceira pessoa, JRPG, Ritmo|Jogo de ritmo, Party game, Visual novel, Point and click, Survival horror, Beat em up, Shoot em up|Shmup, Tower defense, Idle|Clicker, Gacha, Card game|Jogo de cartas, Deckbuilder, Cozy game|Cozy',
+      raro: 'Immersive sim, CRPG, Action RPG|ARPG, RPG tático|Tactical RPG|SRPG, 4X, Grand strategy|Grande estratégia, City builder, Farming sim|Simulador de fazenda, Life sim, Dating sim, Walking simulator, Bullet hell, Run and gun, Boomer shooter, Extraction shooter, Hero shooter, Looter shooter, Auto battler|Autochess, Plataforma de precisão|Precision platformer, Collectathon, Kart racer|Corrida de kart, Arcade, Pinball, Tycoon, Colony sim, Monster taming, Musou, Arena shooter, Twin-stick shooter, Rail shooter, Light gun, Aventura de texto|Text adventure, Ficção interativa|Interactive fiction, Escape room, Hidden object, Match-3, Endless runner, Multiplayer assimétrico|Asymmetric multiplayer, Dedução social|Social deduction',
+      lendario: 'Bullet heaven, Soulsborne, Metroidbrainia, Kaizo, Roguevania, Boss rush, Danmaku, Dungeon crawler, Blobber, Survivors-like|Survivorslike, Doomlike, Diablo-like, Zelda-like, Incremental, God game, Wargame, Zachlike|Programming game, Sokoban, Picross|Nonogram, Mascot platformer, Simulador de voo|Flight sim, Simulador espacial|Space sim, Analog horror, Otome, Kinetic novel, Livro-jogo|Gamebook, MUD, Souls-lite, Extraction RPG, Retro FPS',
+    } },
+  { q: 'Cite um jogo indie',
+    strip: ['jogo'],
+    tiers: {
+      comum: 'Hollow Knight, Minecraft, Stardew Valley, Undertale, Terraria, Among Us, Celeste, Cuphead',
+      incomum: 'Hades, Dead Cells, Slay the Spire, Ori and the Blind Forest|Ori, Ori and the Will of the Wisps, Shovel Knight, Limbo, Inside, Braid, Fez, Super Meat Boy, The Binding of Isaac|Binding of Isaac, Spelunky, Deltarune, Vampire Survivors, Balatro, Lethal Company, Phasmophobia, Papers Please, Return of the Obra Dinn, Outer Wilds, Disco Elysium, Hotline Miami, Katana Zero, Night in the Woods, Gris, Journey, Firewatch, What Remains of Edith Finch, Subnautica, Don\'t Starve, Oxygen Not Included, Factorio, RimWorld, FTL|FTL Faster Than Light, Into the Breach, Cult of the Lamb, Hollow Knight Silksong|Silksong, Tunic, Death\'s Door, Blasphemous, Enter the Gungeon, Risk of Rain|Risk of Rain 2, Darkest Dungeon, Five Nights at Freddy\'s|FNAF, Bendy and the Ink Machine|Bendy, Poppy Playtime, Getting Over It, Valheim, Raft, Stray, Untitled Goose Game, A Short Hike, Animal Well',
+      raro: 'Hyper Light Drifter, Owlboy, Axiom Verge, Ender Lilies, Nine Sols, Sea of Stars, Chained Echoes, Inscryption, Loop Hero, Noita, Dome Keeper, Brotato, Halls of Torment, Pizza Tower, Iconoclasts, Bastion, Transistor, Pyre, Unpacking, Spiritfarer, Neva, Omori, Fear & Hunger|Fear and Hunger, Yume Nikki, LISA|LISA The Painful, Hylics, Rain World, Signalis, Iron Lung, Buckshot Roulette, Pseudoregalia, Chants of Sennaar, Cocoon, Viewfinder, Superliminal, Baba Is You, Patrick\'s Parabox, Stephen\'s Sausage Roll, The Witness, Antichamber, Manifold Garden, Her Story, Kentucky Route Zero, Oxenfree, Dandara, Toren, Horizon Chase|Horizon Chase Turbo, Enigma do Medo, Chroma Squad, Knights of Pen and Paper, Unsighted, Blazing Chrome, Oniken, Odallus, Kingdom Two Crowns, Gonner, Downwell, Nuclear Throne, Wizard of Legend, Moonlighter, Children of Morta, Darkwood, Dredge, Venba, Coffee Talk, VA-11 Hall-A',
+      lendario: 'Cave Story|Doukutsu Monogatari, La-Mulana, Knytt, An Untitled Story, Iji, Dwarf Fortress, Kenshi, Caves of Qud, Cogmind, Brogue, Dungeon Crawl Stone Soup|DCSS, NetHack, ADOM, Tales of Maj\'Eyal, Starsector, Cataclysm DDA|Cataclysm, Barotrauma, Dusk, Ultrakill, Amid Evil, Ion Fury, Cruelty Squad, Anodyne, Lone Survivor, OFF, Space Funeral, Middens, Lucah, Hylics 2, Paradise Killer, The Hex, Pony Island, Frog Fractions, Hypnospace Outlaw, Rusty Lake, Faith, World of Horror, Mouthwashing, Anatomy, Sludge Life, Wilmot\'s Warehouse, Gato Roboto, Teslagrad, Environmental Station Alpha, Momodora, Lunacid, Grime, Sundered, Salt and Sanctuary, Eastward, Ooblets, Eastshade, Wandersong, Chicory, Gravity Bone, Thirty Flights of Loving, Proteus, Dear Esther, Everything, Gorogoa, Pathologic, Tiny Glade, Islanders, Townscaper, Shapez, Opus Magnum, Exapunks, TIS-100, Infinifactory, SpaceChem, Mini Metro, Mini Motorways, Dorfromantik',
+    } },
+  { q: 'Cite um personagem de The Witcher',
+    strip: [],
+    tiers: {
+      comum: 'Geralt|Geralt de Rívia|Geralt of Rivia, Ciri|Cirilla, Yennefer|Yennefer de Vengerberg, Triss|Triss Merigold, Jaskier|Dandelion, Roach|Plotka',
+      incomum: 'Vesemir, Lambert, Eskel, Emhyr|Emhyr var Emreis, Eredin, Imlerith, Caranthir, Avallac\'h, Gaunter O\'Dimm|O\'Dimm|Man of Glass|Homem dos Espelhos, Olgierd|Olgierd von Everec, Regis|Emiel Regis, Dettlaff, Anna Henrietta|Henrietta, Syanna|Sylvia Anna, Zoltan|Zoltan Chivay, Keira|Keira Metz, Philippa|Philippa Eilhart, Letho|Letho de Gulet, Iorveth, Vernon Roche|Roche, Radovid, Foltest, Dijkstra|Sigismund Dijkstra, Bloody Baron|Barão Sangrento|Phillip Strenger, Crach an Craite|Crach, Hjalmar, Cerys, Uma',
+      raro: 'Margarita|Margarita Laux-Antille, Fringilla|Fringilla Vigo, Shani, Priscilla, Ves, Saskia|Saesenthessis, Calanthe, Pavetta, Duny|Urcheon, Milva, Cahir, Angoulême, Leo Bonhart|Bonhart, Vilgefortz, Tissaia|Tissaia de Vries, Stregobor, Istredd, Renfri, Borch|Borch Three Jackdaws|Villentretenmerth, Nenneke, Coën, Mousesack|Ermion, Sabrina Glevissig, Yarpen Zigrin|Yarpen, Lara Dorren, Alzur, Ge\'els, Detmold, Sile de Tansarville|Sile, Adda, Henselt, Demavend, Meve, Ida Emean, Francesca Findabair|Francesca',
+      lendario: 'Berengar, Eist Tuirseach|Eist, Visenna, Korin, Mistle, Kayleigh, Reef, Giselher, Iskra, Asse, Rience, Stefan Skellen|Skellen, Jacques de Aldersberg, Azar Javed, Shilard Fitz-Oesterlen, Kalkstein, Abigail, Thaler, Whoreson Junior|Whoreson, Gaetan, Guillaume|Guillaume de Launfal, Palmerin, Vivienne, Orianna, Lugos, Arnvald, Svanrige, Ronvid|Ronvid of the Small Marsh, Marlene|Marlene de Trastamara, Tibor Eggebracht, Ihuarraquax, Yaevinn, Toruviel, Ciaran aep Easnillien, Aelirenn',
+    } },
+  { q: 'Cite um personagem de Hades (1 ou 2)',
+    strip: [],
+    tiers: {
+      comum: 'Zagreus|Zagreu, Hades, Thanatos|Tânatos, Megaera|Megera, Melinoë|Melinoe, Zeus, Poseidon, Athena|Atena',
+      incomum: 'Nyx, Persephone|Perséfone, Achilles|Aquiles, Patroclus|Pátroclo, Hypnos, Dusa, Cerberus|Cérbero, Skelly, Sisyphus|Sísifo, Orpheus|Orfeu, Eurydice|Eurídice, Charon|Caronte, Chaos|Caos, Dionysus|Dioniso, Aphrodite|Afrodite, Ares, Artemis|Ártemis, Demeter|Deméter, Hermes, Apollo|Apolo, Hestia|Héstia, Hephaestus|Hefesto, Hera, Selene, Hecate|Hécate, Chronos|Cronos, Odysseus|Odisseu',
+      raro: 'Moros, Nemesis|Nêmesis, Eris|Éris, Dora, Arachne|Aracne, Narcissus|Narciso, Echo|Eco, Medea|Medeia, Circe, Icarus|Ícaro, Polyphemus|Polifemo, Scylla|Cila, Charybdis|Caríbdis, Prometheus|Prometeu, Typhon|Tifão, Heracles|Hércules, Asterius|Minotaur|Minotauro, Theseus|Teseu, Alecto|Aleto, Tisiphone|Tisífone, Bouldy, Lernaean Bone Hydra|Hydra|Hidra',
+      lendario: 'Toula, Frinos, Raki, Hecuba, Gale, Wretched Broker|Broker, Wretched Thug, Stygius, Varatha, Aegis, Malphon, Coronacht, Exagryph, Descura, Ygnium, Zorephet, Revaal',
+    } },
+  { q: 'Cite um personagem de Genshin Impact',
+    strip: [],
+    tiers: {
+      comum: 'Paimon, Aether, Lumine, Diluc, Venti, Zhongli, Raiden Shogun|Raiden|Ei, Hu Tao, Klee',
+      incomum: 'Amber, Kaeya, Lisa, Barbara, Jean, Fischl, Mona, Keqing, Qiqi, Xiangling, Xingqiu, Beidou, Ningguang, Chongyun, Sucrose, Razor, Noelle, Bennett, Tartaglia|Childe, Albedo, Ganyu, Xiao, Eula, Kazuha|Kaedehara Kazuha, Ayaka|Kamisato Ayaka, Yoimiya, Sayu, Kokomi|Sangonomiya Kokomi, Itto|Arataki Itto, Gorou, Shenhe, Yun Jin, Yae Miko|Yae, Ayato|Kamisato Ayato, Yelan, Diona, Xinyan, Rosaria, Thoma, Kujou Sara|Sara',
+      raro: 'Kuki Shinobu|Shinobu, Shikanoin Heizou|Heizou, Tighnari, Collei, Dori, Cyno, Candace, Nilou, Nahida, Layla, Wanderer|Scaramouche|Kunikuzushi, Faruzan, Alhaitham, Yaoyao, Dehya, Mika, Baizhu, Kaveh, Kirara, Lyney, Lynette, Freminet, Neuvillette, Wriothesley, Charlotte, Furina|Focalors, Navia, Chevreuse, Gaming, Xianyun, Chiori, Arlecchino|The Knave, Sethos, Clorinde, Sigewinne, Emilie, Aloy',
+      lendario: 'Kachina, Mualani, Kinich, Xilonen, Chasca, Ororon, Citlali, Mavuika, Lan Yan, Varesa, Iansan, Escoffier, Ifa, Skirk, Dahlia, Ineffa, Lauma, Flins, Aino, Nefer, Dainsleif, La Signora|Signora, Pantalone, Capitano|Il Capitano, Pierro, Columbina, Il Dottore|Dottore, Sandrone, Pulcinella, Katheryne, Dvalin, Andrius, Azhdaha, Osial, Makoto, Rhinedottir, Istaroth, Nibelung, Liben',
+    } },
 ];
 
 /* ---------------- Julgamento das respostas ---------------- */
 function norm(s) {
-  return s.toLowerCase().replace(/\+/g, ' plus ').replace(/#/g, ' sharp ').normalize('NFD').replace(/[̀-ͯ]/g, '')
+  return s.toLowerCase().replace(/['’`´]/g, '').replace(/\+/g, ' plus ').replace(/#/g, ' sharp ').normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 const ARTICLES = /^(o|a|os|as|um|uma|el|la|the|de|do|da)\s+/;
@@ -1073,27 +1472,35 @@ function judge(input, q) {
   return best ? best.tier : 'vazio';
 }
 
-/* ---------------- Aleatoriedade com semente (viagem diária) ---------------- */
-function mulberry32(a) {
-  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-}
-function pickQuestions(seed) {
-  const rnd = mulberry32(seed);
-  const pool = QUESTIONS.slice();
-  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-  return pool.slice(0, ROUND_SIZE);
-}
-function voyageNumber() {
-  const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  return Math.max(1, Math.round((today - LAUNCH_DAY) / 86400000) + 1);
-}
-
 /* ---------------- Persistência (opcional) ---------------- */
 const store = {
   get() { try { return JSON.parse(localStorage.getItem('cosmion-stats')) || {}; } catch (e) { return {}; } },
   set(v) { try { localStorage.setItem('cosmion-stats', JSON.stringify(v)); } catch (e) {} },
 };
+
+/* ---------------- Sorteio das perguntas ----------------
+   Cada viagem sorteia perguntas novas e evita as já vistas neste navegador,
+   até o banco inteiro ter aparecido; aí o ciclo recomeça. */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+  return arr;
+}
+let seenFallback = [];   // usado quando o navegador bloqueia localStorage
+function pickQuestions() {
+  const st = store.get();
+  let seen = new Set(Array.isArray(st.seen) ? st.seen : seenFallback);
+  let fresh = QUESTIONS.filter(q => !seen.has(q.q));
+  if (fresh.length < ROUND_SIZE) {             // ciclo completo: recomeça, mas sem repetir a última viagem
+    const last = new Set(Array.isArray(st.last) ? st.last : []);
+    seen = new Set();
+    fresh = QUESTIONS.filter(q => !last.has(q.q));
+  }
+  const picked = shuffle(fresh).slice(0, ROUND_SIZE);
+  picked.forEach(q => seen.add(q.q));
+  seenFallback = [...seen];
+  store.set({ ...st, seen: seenFallback, last: picked.map(q => q.q) });
+  return picked;
+}
 
 /* =====================================================================
    PIXEL SPRITES (desenhados proceduralmente em 24x24)
@@ -1460,7 +1867,7 @@ function frame(now) {
    ===================================================================== */
 const S = {
   screen: 'intro', phase: 'intro', questions: [], i: 0, results: [], score: 0, dist: 0,
-  daily: true, voyage: voyageNumber(), timerStart: 0, timerId: null, jumpId: 0, lastSec: 0, pausedAt: 0, revealAt: 0,
+  voyage: 1, timerStart: 0, timerId: null, jumpId: 0, lastSec: 0, pausedAt: 0, revealAt: 0,
 };
 const input = $('#answer'), center = $('#center');
 const resultIcon = animSprite($('#result-icon'), 'comum');
@@ -1483,13 +1890,13 @@ function buildLegend(el) {
 
 function introMeta() {
   const st = store.get();
+  S.voyage = (st.played || 0) + 1;
   $('#intro-meta').textContent = `VIAGEM #${S.voyage}` + (st.best ? ` · RECORDE ${st.best} PTS` : '');
 }
 
-function newVoyage(daily) {
-  S.daily = daily;
-  const seed = daily ? S.voyage * 7919 : (Math.random() * 1e9) | 0;
-  S.questions = pickQuestions(seed);
+function newVoyage() {
+  S.voyage = (store.get().played || 0) + 1;
+  S.questions = pickQuestions();
   S.i = 0; S.results = []; S.score = 0; S.dist = 0; displayDist = 0; drifts = [];
   $('#hud-score').textContent = '0';
   const pips = $('#pips'); pips.innerHTML = '';
@@ -1703,7 +2110,7 @@ function showEnd() {
 
   switchScreen('end');
   $('#screen-end').scrollTop = 0;
-  $('#end-title').textContent = (S.daily ? `VIAGEM #${S.voyage}` : 'VIAGEM LIVRE') + ' CONCLUÍDA';
+  $('#end-title').textContent = `VIAGEM #${S.voyage} CONCLUÍDA`;
   countUp($('#end-score'), 0, S.score, 1200);
   $('#end-dist').textContent = fmt(S.dist) + ' AL';
   drawGauss(S.score);
@@ -1715,7 +2122,7 @@ function showEnd() {
 
 function share() {
   const pct = percentile();
-  const text = `COSMION ${S.daily ? '#' + S.voyage : '(viagem livre)'} 🚀\n${S.score} PTS · ${fmt(S.dist)} AL · melhor que ${pct}%\n${S.results.map(r => TIERS[r.tier].emoji).join('')}`;
+  const text = `COSMION · VIAGEM #${S.voyage} 🚀\n${S.score} PTS · ${fmt(S.dist)} AL · melhor que ${pct}%\n${S.results.map(r => TIERS[r.tier].emoji).join('')}`;
   if (navigator.share) { navigator.share({ text }).catch(() => {}); return; }
   const done = () => toast('COPIADO!');
   if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
@@ -1754,8 +2161,8 @@ function toggleSound() {
   if (!muted) tone(880, .06);
 }
 
-$('#btn-start').addEventListener('click', () => newVoyage(true));
-$('#btn-again').addEventListener('click', () => newVoyage(false));
+$('#btn-start').addEventListener('click', () => newVoyage());
+$('#btn-again').addEventListener('click', () => newVoyage());
 $('#btn-share').addEventListener('click', share);
 $('#btn-next').addEventListener('click', next);
 $('#btn-menu').addEventListener('click', openMenu);
